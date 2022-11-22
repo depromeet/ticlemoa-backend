@@ -1,61 +1,56 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { Profile } from 'passport-kakao';
+import { JwtSubjectType } from './types/jwt.type';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService, private configService: ConfigService) {}
 
-  async validateUser(profile: Profile['_json']) {
-    // const profile
-    // const exUser = await this.userRepository.findOne({
-    //   where: { email },
-    //   select: ['id', 'email', 'nickname'],
-    // });
-    // if (!exUuser) {
-    //   const newUser = await this.userRepository.create({
-    //     id: profile.id,
-    //     email: profile.has_email,
-    //     nickname: profile.nickname,
-    //     provider: 'kakao',
-    //   });
-    //   return newUser;
-    // }
-    // return exUser;
-    return true;
-  }
+  // async validateUser(profile: Profile) {
+  //   const { id, provider, displayname: nickname } = profile;
+  //   const email = profile._json.kakao_account.email;
+  //   const exUser = await this.userRepository.findOne({
+  //     where: { email },
+  //     select: ['id', 'email', 'nickname'],
+  //   });
+  //   if (!exUser) {
+  //     const newUser = await this.userRepository.create({
+  //       id
+  //       email
+  //       nickname
+  //       provider
+  //     });
+  //     return newUser;
+  //   }
+  //   return exUser;
+  // }
 
-  async logIn(user, res) {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.generateAccessToken(user.id),
-      this.generateRefreshToken(user.id),
-    ]);
+  async logIn(user, res: Response) {
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+
+    res.cookie('Authorization', accessToken, {
+      // TODO 만료기간 설정
+      httpOnly: true,
+    });
 
     res.cookie('refresh_token', refreshToken, {
-      path: '/auth',
+      // TODO 만료기간 설정
       httpOnly: true,
     });
 
     return { accessToken };
   }
 
-  async generateAccessToken(user) {
-    return this.jwtService.signAsync(
-      { user },
-      {
-        expiresIn: '1m',
-        subject: 'ACCESS_TOKEN',
-      },
-    );
+  // TODO 토큰 expiresIn 추가
+  generateAccessToken(user) {
+    return this.jwtService.sign({ user }, { subject: JwtSubjectType.ACCESS });
   }
 
-  async generateRefreshToken(user) {
-    return this.jwtService.signAsync(
-      { user },
-      {
-        expiresIn: '30 days',
-        subject: 'REFRESH_TOKEN',
-      },
-    );
+  generateRefreshToken(user) {
+    return this.jwtService.sign({ user }, { subject: JwtSubjectType.REFRESH });
   }
 }
