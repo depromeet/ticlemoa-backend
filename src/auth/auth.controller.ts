@@ -1,6 +1,7 @@
-import { Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Res, UseGuards } from '@nestjs/common';
+import { User } from '../common/decorators/user.decorator';
 import { AuthService } from './auth.service';
-import { KakaoAuthGuard } from './guards/kakao-auth.guard';
+import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
 
   @Get('kakao/redirect')
   @UseGuards(KakaoAuthGuard)
-  async kakaoLoginRedirect() {
-    return {};
+  async kakaoLoginRedirect(@User() user, @Res({ passthrough: true }) res) {
+    await this.authService.logIn(user, res);
   }
 }
