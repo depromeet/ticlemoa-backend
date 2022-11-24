@@ -6,10 +6,15 @@ import { AuthProvider } from '../entities/types/auth-provider.interface';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../user/repository/user.repository';
 import { JwtSubjectType } from './types/jwt.type';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService, private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async validateUser(validateUserDto: ValidateUserDto): Promise<User> {
     const { sns_id, email, nickname, provider } = validateUserDto;
@@ -18,41 +23,54 @@ export class AuthService {
       select: { id: true, email: true, nickname: true, provider: true },
     });
     if (!exUser) {
-      const newUser = await this.userRepository.save({
+      const { id } = await this.userRepository.save({
         sns_id,
         email,
         nickname,
         provider: AuthProvider[provider],
       });
-      console.log(newUser);
+      const newUser = Object.assign({ email, nickname, provider }, { id }) as User;
       return newUser;
     }
     return exUser;
   }
 
-  async logIn(user, res: Response) {
+  logIn(user: User, res: Response): { accessToken: string } {
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
 
     res.cookie('Authorization', accessToken, {
-      // TODO 만료기간 설정
       httpOnly: true,
+      maxAge: +this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME') * 1000,
     });
 
     res.cookie('refresh_token', refreshToken, {
-      // TODO 만료기간 설정
       httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
     });
 
     return { accessToken };
   }
 
-  // TODO 토큰 expiresIn 추가
-  generateAccessToken(user) {
-    return this.jwtService.sign({ user }, { subject: JwtSubjectType.ACCESS });
+  generateAccessToken(user: User): string {
+    return this.jwtService.sign(
+      { user },
+      {
+        subject: JwtSubjectType.ACCESS,
+        secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: `${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}s`,
+      },
+    );
   }
 
-  generateRefreshToken(user) {
-    return this.jwtService.sign({ user }, { subject: JwtSubjectType.REFRESH });
+  generateRefreshToken(user: User): string {
+    return this.jwtService.sign(
+      { user },
+      {
+        subject: JwtSubjectType.REFRESH,
+        secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: `${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}s`,
+      },
+    );
   }
 }
