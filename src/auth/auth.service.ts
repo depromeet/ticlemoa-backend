@@ -1,32 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { Profile } from 'passport-kakao';
+import { ValidateUserDto } from './dto/validate-user.dto';
+import { AuthProvider } from '../entities/types/auth-provider.interface';
+import { User } from '../entities/user.entity';
+import { UserRepository } from '../user/repository/user.repository';
 import { JwtSubjectType } from './types/jwt.type';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService, private configService: ConfigService) {}
+  constructor(private readonly jwtService: JwtService, private readonly userRepository: UserRepository) {}
 
-  // async validateUser(profile: Profile) {
-  //   const { id, provider, displayname: nickname } = profile;
-  //   const email = profile._json.kakao_account.email;
-  //   const exUser = await this.userRepository.findOne({
-  //     where: { email },
-  //     select: ['id', 'email', 'nickname'],
-  //   });
-  //   if (!exUser) {
-  //     const newUser = await this.userRepository.create({
-  //       id
-  //       email
-  //       nickname
-  //       provider
-  //     });
-  //     return newUser;
-  //   }
-  //   return exUser;
-  // }
+  async validateUser(validateUserDto: ValidateUserDto): Promise<User> {
+    const { sns_id, email, nickname, provider } = validateUserDto;
+    const exUser = await this.userRepository.findOne({
+      where: { sns_id },
+      select: { id: true, email: true, nickname: true, provider: true },
+    });
+    if (!exUser) {
+      const newUser = await this.userRepository.save({
+        sns_id,
+        email,
+        nickname,
+        provider: AuthProvider[provider],
+      });
+      console.log(newUser);
+      return newUser;
+    }
+    return exUser;
+  }
 
   async logIn(user, res: Response) {
     const accessToken = this.generateAccessToken(user);
