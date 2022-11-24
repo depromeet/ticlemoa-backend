@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "@sentry/node": "^7.17.2",
     "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.3",
     "mysql2": "^2.3.3",
     "nest-raven": "^9.0.0",
     "passport": "^0.6.0",
