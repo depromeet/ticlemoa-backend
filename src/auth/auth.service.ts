@@ -20,16 +20,14 @@ export class AuthService {
     const { sns_id, email, nickname, provider } = validateUserDto;
     const exUser = await this.userRepository.findOne({
       where: { sns_id },
-      select: { id: true, email: true, nickname: true, provider: true },
     });
     if (!exUser) {
-      const { id } = await this.userRepository.save({
+      const newUser = await this.userRepository.save({
         sns_id,
         email,
         nickname,
         provider: AuthProvider[provider],
       });
-      const newUser = Object.assign({ email, nickname, provider }, { id }) as User;
       return newUser;
     }
     return exUser;
@@ -54,7 +52,7 @@ export class AuthService {
 
   generateAccessToken(user: User): string {
     return this.jwtService.sign(
-      { user },
+      { id: user.id, provider: user.provider },
       {
         subject: JwtSubjectType.ACCESS,
         secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -65,7 +63,7 @@ export class AuthService {
 
   generateRefreshToken(user: User): string {
     return this.jwtService.sign(
-      { user },
+      { id: user.id, provider: user.provider },
       {
         subject: JwtSubjectType.REFRESH,
         secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
