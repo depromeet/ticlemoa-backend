@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy } from 'passport-kakao';
+import { Strategy } from 'passport-kakao';
 import { AuthService } from '../../auth.service';
+import { KakaoProfile } from '../../types/kakao-profile.interface';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
@@ -15,9 +16,16 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(_accessToken: string, _refreshToken: string, profile: Profile, done: CallableFunction): Promise<void> {
-    const { id: sns_id, displayName: nickname, provider } = profile;
-    const email = profile._json.kakao_account.email;
+  async validate(
+    _accessToken: string,
+    _refreshToken: string,
+    profile: KakaoProfile,
+    done: CallableFunction,
+  ): Promise<void> {
+    const { id, displayName: nickname, provider } = profile;
+
+    const sns_id = String(id);
+    const email: string = profile._json.kakao_account.email;
 
     const user = await this.authService.validateUser({ sns_id, email, nickname, provider });
     done(null, user);
