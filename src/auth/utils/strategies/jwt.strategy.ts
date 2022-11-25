@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../../../entities/user.entity';
+import { AuthService } from '../../auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService, private readonly authService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
@@ -18,8 +19,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  // TODO 반환 타입(Partial) 및 페이로드 DTO 작성
-  async validate(payload: any): Promise<Partial<User>> {
-    return { id: payload.id, email: payload.email, nickname: payload.nickname };
+  async validate(payload: Partial<User>): Promise<User> {
+    try {
+      return await this.authService.validateJwt(payload.id, payload.provider);
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }

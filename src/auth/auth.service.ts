@@ -33,6 +33,10 @@ export class AuthService {
     return exUser;
   }
 
+  async validateJwt(id: number, provider: AuthProvider) {
+    return await this.userRepository.findOneOrFail({ where: { id, provider } });
+  }
+
   logIn(user: User, res: Response): { accessToken: string } {
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
