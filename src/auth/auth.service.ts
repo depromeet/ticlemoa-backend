@@ -37,23 +37,6 @@ export class AuthService {
     return await this.userRepository.findOneOrFail({ where: { id, provider } });
   }
 
-  logIn(user: User, res: Response): { accessToken: string } {
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = this.generateRefreshToken(user);
-
-    res.cookie('Authorization', accessToken, {
-      httpOnly: true,
-      maxAge: +this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME') * 1000,
-    });
-
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
-    });
-
-    return { accessToken };
-  }
-
   generateAccessToken(user: User): string {
     return this.jwtService.sign(
       { id: user.id, provider: user.provider },
