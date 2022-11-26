@@ -5,6 +5,5 @@ export interface KakaoProfile {
   username: string;
   displayName: string;
   provider: AuthProvider.kakao;
-  _raw: string;
-  _json: any;
+  _json: { kakao_account: { email: string } };
 }
