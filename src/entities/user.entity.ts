@@ -10,20 +10,19 @@ export class User {
   @IsString()
   @IsNotEmpty()
   @Column({ type: 'varchar', length: 43, nullable: false })
-  sns_id!: string;
+  snsId!: string;
 
   @IsEmail()
-  @IsNotEmpty()
-  @Column({ type: 'varchar', length: 40, nullable: false })
-  email!: string;
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   nickname!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  avatar_url?: string;
+  avatarUrl?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -31,11 +30,11 @@ export class User {
   provider!: AuthProvider;
 
   @CreateDateColumn({ type: 'timestamp' })
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at!: Date;
+  updatedAt!: Date;
 
   @DeleteDateColumn({ type: 'timestamp' })
-  deleted_at?: Date;
+  deletedAt?: Date;
 }

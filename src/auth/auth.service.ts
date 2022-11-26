@@ -17,13 +17,13 @@ export class AuthService {
   ) {}
 
   async validateUser(validateUserDto: ValidateUserDto): Promise<User> {
-    const { sns_id, email, nickname, provider } = validateUserDto;
+    const { snsId, email, nickname, provider } = validateUserDto;
     const exUser = await this.userRepository.findOne({
-      where: { sns_id },
+      where: { snsId },
     });
     if (!exUser) {
       const newUser = await this.userRepository.save({
-        sns_id,
+        snsId,
         email,
         nickname,
         provider: AuthProvider[provider],

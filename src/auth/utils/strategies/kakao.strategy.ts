@@ -24,10 +24,10 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
   ): Promise<void> {
     const { id, displayName: nickname, provider } = profile;
 
-    const sns_id = String(id);
+    const snsId = String(id);
     const email: string = profile._json.kakao_account.email;
 
-    const user = await this.authService.validateUser({ sns_id, email, nickname, provider });
+    const user = await this.authService.validateUser({ snsId, email, nickname, provider });
     done(null, user);
   }
 }
