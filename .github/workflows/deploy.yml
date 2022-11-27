@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [14]
+        node: [16]
     # env:
     #   NODE_ENV: "development"
 
@@ -23,21 +23,21 @@ jobs:
       - name: Set env to dev
         if: endsWith(github.ref, '/dev')
         run: |
-          echo "application_name=nyongnyong instance" >> $GITHUB_ENV
-          echo "environment_name=Nyongnyonginstance-env" >> $GITHUB_ENV
+          echo "application_name=nyongnyong" >> $GITHUB_ENV
+          echo "environment_name=Nyongnyong-env" >> $GITHUB_ENV
           echo "NODE_ENV=development" >> $GITHUB_ENV
       - name: Set env to production
         if: endsWith(github.ref, '/main')
         run: |
-          echo "application_name=nyongnyong instance" >> $GITHUB_ENV
-          echo "environment_name=Nyongnyonginstance-env" >> $GITHUB_ENV
+          echo "application_name=nyongnyong" >> $GITHUB_ENV
+          echo "environment_name=Nyongnyong-env" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
       - name: Setup node env 🏗
         uses: actions/setup-node@v2.1.2
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Installing NPM
+      - name: Installing Yarn
         run: npm i -g yarn
 
       - name: Install Dependency
