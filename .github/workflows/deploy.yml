@@ -14,8 +14,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [16]
-    # env:
-    #   NODE_ENV: "development"
 
     steps:
       - name: Checkout 🛎
@@ -70,8 +68,8 @@ jobs:
         with:
           aws_access_key: ${{secrets.ACCESS_KEY_ID}}
           aws_secret_key: ${{secrets.SECRET_ACCESS_KEY}}
-          application_name: ${{ env.application_name }}
-          environment_name: ${{ env.environment_name }}
+          application_name: nyongnyong
+          environment_name: Nyongnyong-env
           region: us-east-2
           version_label: 'e-learn-${{ steps.format-time.outputs.replaced }}'
           deployment_package: deploy.zip
