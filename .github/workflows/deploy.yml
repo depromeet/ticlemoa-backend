@@ -70,7 +70,7 @@ jobs:
           aws_secret_key: ${{secrets.SECRET_ACCESS_KEY}}
           application_name: nyongnyong
           environment_name: Nyongnyong-env
-          region: us-east-2
+          region: ap-northeast-2
           version_label: 'e-learn-${{ steps.format-time.outputs.replaced }}'
           deployment_package: deploy.zip
 
