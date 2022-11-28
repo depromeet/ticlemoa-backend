@@ -5,74 +5,85 @@ on:
   push:
     branches:
       - main
+env:
+  ECR_REGISTRY: 045129585965.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: ticlemoa
+  APPLICATION_NAME: ticlemoa
+  ENVIRONMENT_NAME: Ticlemoa-env
+  AWS_REGION: ap-northeast-2
+  GIT_SHA: ${{ github.sha }}
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [14]
-    # env:
-    #   NODE_ENV: "development"
+  deploy-prod:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
 
     steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
-      - name: Set env to dev
-        if: endsWith(github.ref, '/dev')
-        run: |
-          echo "application_name=nyongnyong instance" >> $GITHUB_ENV
-          echo "environment_name=Nyongnyonginstance-env" >> $GITHUB_ENV
-          echo "NODE_ENV=development" >> $GITHUB_ENV
-      - name: Set env to production
-        if: endsWith(github.ref, '/main')
-        run: |
-          echo "application_name=nyongnyong instance" >> $GITHUB_ENV
-          echo "environment_name=Nyongnyonginstance-env" >> $GITHUB_ENV
-          echo "NODE_ENV=production" >> $GITHUB_ENV
-      - name: Setup node env 🏗
-        uses: actions/setup-node@v2.1.2
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          node-version: ${{ matrix.node }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Installing NPM
-        run: npm i -g yarn
-        run: yarn
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      # - name: Linting check
-      #   run: npm run lint
+      - name: Create .env file
+        run: |
+          touch .env
+          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
+          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+          echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo JWT_REFRESH_TOKEN_SECRET=${{ secrets.JWT_REFRESH_TOKEN_SECRET }} >> .env
+          echo JWT_ACCESS_TOKEN_SECRET=${{ secrets.JWT_ACCESS_TOKEN_SECRET }} >> .env
+          echo JWT_ACCESS_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_TIME }} >> .env
+          echo JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }} >> .env
+          echo KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} >> .env
+          echo KAKAO_SECRET=${{ secrets.KAKAO_SECRET }} >> .env
+          cat .env
 
-      - name: Building application
-        run: yarn build
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          GIT_SHA: ${{ env.GIT_SHA }}
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD_HH-mm-ss
+          utcOffset: '+09:00'
 
       - name: Generate deployment package
-        run: zip -r deploy.zip * .[^.]* -x "**node_modules**"
+        run: |
+          mkdir -p deploy
+          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
+          cd deploy && zip -r deploy.zip .
 
-      - name: Get timestamp
-        uses: gerred/actions/current-time@master
-        id: current-time
-
-      - name: Run string replace
-        uses: frabert/replace-string-action@master
-        id: format-time
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@v14
         with:
-          pattern: '[:\.]+'
-          string: '${{ steps.current-time.outputs.time }}'
-          replace-with: '-'
-          flags: 'g'
-
-      - name: Beanstalk Deploy for app
-        uses: einaregilsson/beanstalk-deploy@v16
-        with:
-          aws_access_key: ${{secrets.ACCESS_KEY_ID}}
-          aws_secret_key: ${{secrets.SECRET_ACCESS_KEY}}
-          application_name: ${{ env.application_name }}
-          environment_name: ${{ env.environment_name }}
-          region: us-east-2
-          version_label: 'e-learn-${{ steps.format-time.outputs.replaced }}'
-          deployment_package: deploy.zip
-
-      - name: Deployed!
-        run: echo App deployed to ELB
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ env.APPLICATION_NAME }}
+          environment_name: ${{ env.ENVIRONMENT_NAME }}
+          version_label: egg-docker-${{steps.current-time.outputs.formattedTime}}
+          region: ${{ env.AWS_REGION }}
+          deployment_package: deploy/deploy.zip
+          wait_for_environment_recovery: 200

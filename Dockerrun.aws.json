@@ -1,0 +1,12 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "045129585965.dkr.ecr.ap-northeast-2.amazonaws.com/ticlemoa",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 3000
+    }
+  ]
+}

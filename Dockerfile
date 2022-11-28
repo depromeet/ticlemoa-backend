@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 
 # COPY repository
 COPY package*.json ./
+COPY yarn.lock ./
 RUN yarn
 
 COPY . .
