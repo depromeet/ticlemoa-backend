@@ -6,8 +6,8 @@ on:
     branches:
       - main
 env:
-  ECR_REGISTRY: 045129585965.dkr.ecr.ap-northeast-2.amazonaws.com/ticlemoa
-  ECR_REPOSITORY: ticlemoa-api
+  ECR_REGISTRY: 045129585965.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: ticlemoa
   APPLICATION_NAME: ticlemoa
   ENVIRONMENT_NAME: Ticlemoa-env
   AWS_REGION: ap-northeast-2
