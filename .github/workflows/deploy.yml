@@ -9,7 +9,7 @@ env:
   ECR_REGISTRY: 045129585965.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: ticlemoa
   APPLICATION_NAME: ticlemoa
-  ENVIRONMENT_NAME: Ticlemoa-env
+  ENVIRONMENT_NAME: Ticlemoa-env-1
   AWS_REGION: ap-northeast-2
   GIT_SHA: ${{ github.sha }}
 
