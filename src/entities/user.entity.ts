@@ -9,7 +9,7 @@ export class User {
 
   @IsString()
   @IsNotEmpty()
-  @Column({ type: 'varchar', length: 43, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   snsId!: string;
 
   @IsEmail()
