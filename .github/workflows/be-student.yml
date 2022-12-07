@@ -27,8 +27,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.BE_STUDENT_KEY }}
+          aws-secret-access-key: ${{ secrets.BE_STUDENT_SECRET }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -79,8 +79,8 @@ jobs:
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v14
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.BE_STUDENT_KEY }}
+          aws_secret_key: ${{ secrets.BE_STUDENT_SECRET }}
           application_name: ${{ env.APPLICATION_NAME }}
           environment_name: ${{ env.ENVIRONMENT_NAME }}
           version_label: egg-docker-${{steps.current-time.outputs.formattedTime}}
