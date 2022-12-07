@@ -1,9 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { AuthProvider } from './types/auth-provider.interface';
 
 @Entity()
 export class User {
+  @IsNumber()
+  @IsNotEmpty()
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -13,16 +15,17 @@ export class User {
   snsId!: string;
 
   @IsEmail()
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  email?: string;
+  @Column({ type: 'varchar', length: 100 })
+  email?: string | null;
 
   @IsString()
   @IsNotEmpty()
   @Column({ type: 'varchar', length: 100, nullable: false })
   nickname!: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  avatarUrl?: string;
+  @IsString()
+  @Column({ type: 'varchar' })
+  avatarUrl?: string | null;
 
   @IsString()
   @IsNotEmpty()
@@ -36,5 +39,5 @@ export class User {
   updatedAt!: Date;
 
   @DeleteDateColumn({ type: 'timestamp' })
-  deletedAt?: Date;
+  deletedAt?: Date | null;
 }
