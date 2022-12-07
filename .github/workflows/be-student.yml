@@ -73,7 +73,7 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
+          cp be-student-Dockerrun.aws.json deploy/Dockerrun.aws.json
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
