@@ -22,12 +22,6 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     profile: KakaoProfile,
     done: CallableFunction,
   ): Promise<void> {
-    const { id, displayName: nickname, provider } = profile;
-
-    const snsId = String(id);
-    const email: string = profile._json.kakao_account.email;
-
-    const user = await this.authService.validateUser({ snsId, email, nickname, provider });
-    done(null, user);
+    done(null, _accessToken);
   }
 }
