@@ -24,6 +24,10 @@ export class AuthService {
         userId = await this.getUserByKakaoAccessToken(data.accessToken);
         break;
       }
+      case 'naver': {
+        userId = await this.getUserByNaverAccessToken(data.accessToken);
+        break;
+      }
       default: {
         throw new BadRequestException({
           message: '지원하지 않는 OAuth 요청입니다.',
@@ -53,12 +57,14 @@ export class AuthService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const snsId = String(user.data.id);
+
+    const kakaoData = user.data;
+    const snsId = String(kakaoData.id);
     const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
-      const { nickname, profile_image: avatarUrl } = user.data.properties;
-      const kakaoAccount = user.data.kakao_account;
+      const { nickname, profile_image: avatarUrl } = kakaoData.properties;
+      const kakaoAccount = kakaoData.kakao_account;
       const email = kakaoAccount.has_email && !kakaoAccount.email_needs_agreement ? kakaoAccount.email : null;
       const { id } = await this.userRepository.save({
         snsId,
@@ -66,6 +72,37 @@ export class AuthService {
         nickname,
         avatarUrl,
         provider: AuthProvider.KAKAO,
+      });
+      return id;
+    }
+
+    return existedUser.id;
+  }
+
+  async getUserByNaverAccessToken(accessToken: string): Promise<number> {
+    const user = await axios.get('https://openapi.naver.com/v1/nid/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: '네이버 로그인에 실패했습니다',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const naverResponse = user.data.response;
+    const snsId = naverResponse.id;
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+    if (!existedUser) {
+      const { nickname, profile_image: avatarUrl, email } = naverResponse;
+      const { id } = await this.userRepository.save({
+        snsId,
+        email,
+        nickname,
+        avatarUrl,
+        provider: AuthProvider.NAVER,
       });
       return id;
     }
