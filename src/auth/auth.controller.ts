@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { LoginRequest } from './dto/login-request.dto';
 import { AccessToken } from './types/token-response.interface';
 import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
+import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +35,17 @@ export class AuthController {
   @Get('kakao/redirect')
   @UseGuards(KakaoAuthGuard)
   deprecatedKakaoRedirect(@UserRequest() accessToken): void {
+    console.log(accessToken);
+  }
+
+  @Get('naver')
+  @UseGuards(NaverAuthGuard)
+  deprecatedNaverLogin() {
+    return 'success';
+  }
+  @Get('naver/redirect')
+  @UseGuards(NaverAuthGuard)
+  deprecatedNaverRedirect(@UserRequest() accessToken): void {
     console.log(accessToken);
   }
 }
