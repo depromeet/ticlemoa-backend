@@ -2,12 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
-import { AuthService } from '../../auth.service';
 import { KakaoProfile } from '../../types/kakao-profile.interface';
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService, private readonly authService: AuthService) {
+  constructor(private readonly configService: ConfigService) {
     super({
       clientID: configService.get<string>('KAKAO_CLIENT_ID'),
       clientSecret: configService.get<string>('KAKAO_SECRET'),
