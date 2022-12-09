@@ -11,9 +11,12 @@ import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
-  @Post('kakao/login')
-  async kakaoLogin(@Body() kakaoData: LoginRequest, @Res({ passthrough: true }) res: Response): Promise<AccessToken> {
-    const { accessToken, refreshToken } = await this.authService.login(kakaoData);
+  @Post('*/login')
+  async kakaoLogin(
+    @Body() loginRequest: LoginRequest,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AccessToken> {
+    const { accessToken, refreshToken } = await this.authService.login(loginRequest);
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
