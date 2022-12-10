@@ -1,6 +1,7 @@
 import { Common } from './common.entity';
 import { AuthProvider } from './types/auth-provider.enum';
 import { Column, Entity, OneToMany } from 'typeorm';
+import { Article } from './article.entity';
 
 @Entity()
 export class User extends Common {
