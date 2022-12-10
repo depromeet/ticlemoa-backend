@@ -6,19 +6,19 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 100 })
   snsId!: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   email?: string | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 100 })
   nickname!: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   avatarUrl?: string | null;
 
-  @Column({ type: 'enum', enum: AuthProvider, nullable: false })
+  @Column({ type: 'enum', enum: AuthProvider })
   provider!: AuthProvider;
 
   @CreateDateColumn({ type: 'timestamp' })
@@ -27,6 +27,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  @DeleteDateColumn({ type: 'timestamp' })
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt?: Date | null;
 }
