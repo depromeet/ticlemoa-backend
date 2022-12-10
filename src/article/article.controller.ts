@@ -40,10 +40,10 @@ export class ArticleController {
 
   // @UseGuards(JwtAuthGuard)
   @ApiParam({
-    name: 'ids',
+    name: 'articleIds',
     description: '제거할 id들을 받아옵니다. bulk api일 경우 1,2,3,4 가 가능함',
     example: '1 또는 1,2,3,4',
   })
-  @Delete(':ids')
+  @Delete(':articleIds')
   remove(@Param('ids', new ParseIdsPipe()) id: Array<number>) {}
 }
