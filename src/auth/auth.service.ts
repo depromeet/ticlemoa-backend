@@ -54,13 +54,13 @@ export class AuthService {
       });
     }
     const snsId = String(user.data.id);
-    const existedUser = await this.userRepository.findOneBySnsId(snsId);
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
       const { nickname, profile_image: avatarUrl } = user.data.properties;
       const kakaoAccount = user.data.kakao_account;
       const email = kakaoAccount.has_email && !kakaoAccount.email_needs_agreement ? kakaoAccount.email : null;
-      const { id } = await this.userRepository.createUser({
+      const { id } = await this.userRepository.save({
         snsId,
         email,
         nickname,
