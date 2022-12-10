@@ -10,7 +10,7 @@ export class OneArticleResponseDto {
   isPublic: boolean;
   userId: number;
   @ApiProperty({ nullable: true })
-  imageUrl?: string;
+  imageUrl: string;
 }
 export class ManyArticlesResponseDto {
   articles: OneArticleResponseDto[];
