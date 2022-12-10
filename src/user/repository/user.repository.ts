@@ -10,7 +10,7 @@ export class UserRepository extends Repository<User> {
     super(userRepository.target, userRepository.manager, userRepository.queryRunner);
   }
 
-  async findBySnsId(snsId: string) {
+  async findOneBySnsId(snsId: string) {
     return await this.findOne({ where: { snsId } });
   }
 

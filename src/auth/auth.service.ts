@@ -23,12 +23,6 @@ export class AuthService {
         userId = await this.getUserByKakaoAccessToken(data.accessToken);
         break;
       }
-      case undefined: {
-        throw new BadRequestException({
-          message: '로그인할 소셜 서비스를 선택해주세요',
-          statusCode: HttpStatus.BAD_REQUEST,
-        });
-      }
       default: {
         throw new BadRequestException({
           message: '지원하지 않는 OAuth 요청입니다.',
@@ -37,10 +31,8 @@ export class AuthService {
       }
     }
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.generateAccessToken(userId),
-      this.generateRefreshToken(userId),
-    ]);
+    const accessToken = this.generateAccessToken(userId);
+    const refreshToken = this.generateRefreshToken(userId);
 
     return { accessToken, refreshToken };
   }
@@ -61,7 +53,7 @@ export class AuthService {
       });
     }
     const snsId = String(user.data.id);
-    const existedUser = await this.userRepository.findBySnsId(snsId);
+    const existedUser = await this.userRepository.findOneBySnsId(snsId);
 
     if (!existedUser) {
       const { nickname, profile_image: avatarUrl } = user.data.properties;
@@ -80,8 +72,8 @@ export class AuthService {
     return existedUser.id;
   }
 
-  async generateAccessToken(userId: number): Promise<string> {
-    return this.jwtService.signAsync(
+  generateAccessToken(userId: number): string {
+    return this.jwtService.sign(
       { id: userId },
       {
         subject: JwtSubjectType.ACCESS,
@@ -91,8 +83,8 @@ export class AuthService {
     );
   }
 
-  async generateRefreshToken(userId: number): Promise<string> {
-    return this.jwtService.signAsync(
+  generateRefreshToken(userId: number): string {
+    return this.jwtService.sign(
       { id: userId },
       {
         subject: JwtSubjectType.REFRESH,
