@@ -4,7 +4,6 @@ import { AuthProvider } from './types/auth-provider.interface';
 
 @Entity()
 export class User {
-  @IsNotEmpty()
   @PrimaryGeneratedColumn()
   id!: number;
 
