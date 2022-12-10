@@ -33,8 +33,8 @@ export class ArticleController {
     return null;
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
+  @Put(':articleId')
+  update(@Param('articleId') id: string, @Body() updateArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
     return null;
   }
 
