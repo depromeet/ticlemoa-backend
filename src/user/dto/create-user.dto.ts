@@ -1,22 +1,22 @@
-import { IsEmpty, IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { AuthProvider } from '../../entities/types/auth-provider.interface';
+import { IsEmail, IsEmpty, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { AuthProvider } from '../../entities/types/auth-provider.enum';
 
 export class CreateUserDto {
   @IsString()
   @IsEmpty()
   snsId!: string;
 
-  @IsString()
-  email?: string;
+  @IsEmail()
+  email?: string | null;
 
   @IsString()
   @IsEmpty()
-  nickname: string;
+  nickname!: string;
 
   @IsString()
-  avatarUrl: string;
+  avatarUrl?: string | null;
 
   @IsEnum(AuthProvider)
   @IsNotEmpty()
-  provider: AuthProvider;
+  provider!: AuthProvider;
 }

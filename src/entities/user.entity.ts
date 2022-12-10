@@ -1,32 +1,23 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { AuthProvider } from './types/auth-provider.interface';
+import { AuthProvider } from './types/auth-provider.enum';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @IsString()
-  @IsNotEmpty()
   @Column({ type: 'varchar', length: 100, nullable: false })
   snsId!: string;
 
-  @IsEmail()
   @Column({ type: 'varchar', length: 100 })
   email?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
   @Column({ type: 'varchar', length: 100, nullable: false })
   nickname!: string;
 
-  @IsString()
   @Column({ type: 'varchar' })
   avatarUrl?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
   @Column({ type: 'enum', enum: AuthProvider, nullable: false })
   provider!: AuthProvider;
 
