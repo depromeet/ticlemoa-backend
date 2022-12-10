@@ -1,32 +1,24 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { AuthProvider } from './types/auth-provider.interface';
+import { AuthProvider } from './types/auth-provider.enum';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'varchar', length: 43, nullable: false })
+  @Column({ type: 'varchar', length: 100 })
   snsId!: string;
 
-  @IsEmail()
   @Column({ type: 'varchar', length: 100, nullable: true })
-  email?: string;
+  email?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 100 })
   nickname!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'enum', enum: AuthProvider, nullable: false })
+  @Column({ type: 'enum', enum: AuthProvider })
   provider!: AuthProvider;
 
   @CreateDateColumn({ type: 'timestamp' })
@@ -35,6 +27,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  @DeleteDateColumn({ type: 'timestamp' })
-  deletedAt?: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date | null;
 }

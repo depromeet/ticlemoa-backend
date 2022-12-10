@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-import { ValidateUserDto } from './dto/validate-user.dto';
-import { AuthProvider } from '../entities/types/auth-provider.interface';
-import { User } from '../entities/user.entity';
+import { AuthProvider } from '../entities/types/auth-provider.enum';
 import { UserRepository } from '../user/repository/user.repository';
-import { JwtSubjectType } from './types/jwt.type';
+import { JwtSubjectType } from './types/jwtSubjectType';
 import { ConfigService } from '@nestjs/config';
+import { LoginRequest } from './dto/login-request.dto';
+import axios from 'axios';
+import { TokenResponse } from './types/token-response.interface';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,30 +17,65 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async validateUser(validateUserDto: ValidateUserDto): Promise<User> {
-    const { snsId, email, nickname, provider } = validateUserDto;
-    const exUser = await this.userRepository.findOne({
-      where: { snsId },
+  async login(data: LoginRequest): Promise<TokenResponse> {
+    let userId: number;
+    switch (data.vendor) {
+      case 'kakao': {
+        userId = await this.getUserByKakaoAccessToken(data.accessToken);
+        break;
+      }
+      default: {
+        throw new BadRequestException({
+          message: '지원하지 않는 OAuth 요청입니다.',
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
+      }
+    }
+
+    const accessToken = this.generateAccessToken(userId);
+    const refreshToken = this.generateRefreshToken(userId);
+
+    return { accessToken, refreshToken };
+  }
+
+  async validateJwt(id: number): Promise<User> {
+    return await this.userRepository.findOneOrFail({ where: { id } });
+  }
+
+  async getUserByKakaoAccessToken(accessToken: string): Promise<number> {
+    const user = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
     });
-    if (!exUser) {
-      const newUser = await this.userRepository.save({
+
+    if (!user) {
+      throw new BadRequestException({
+        message: '카카오 로그인에 실패했습니다',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    const snsId = String(user.data.id);
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+    if (!existedUser) {
+      const { nickname, profile_image: avatarUrl } = user.data.properties;
+      const kakaoAccount = user.data.kakao_account;
+      const email = kakaoAccount.has_email && !kakaoAccount.email_needs_agreement ? kakaoAccount.email : null;
+      const { id } = await this.userRepository.save({
         snsId,
         email,
         nickname,
-        provider: AuthProvider[provider],
+        avatarUrl,
+        provider: AuthProvider.KAKAO,
       });
-      return newUser;
+      return id;
     }
-    return exUser;
+
+    return existedUser.id;
   }
 
-  async validateJwt(id: number, provider: AuthProvider) {
-    return await this.userRepository.findOneOrFail({ where: { id, provider } });
-  }
-
-  generateAccessToken(user: User): string {
+  generateAccessToken(userId: number): string {
     return this.jwtService.sign(
-      { id: user.id, provider: user.provider },
+      { id: userId },
       {
         subject: JwtSubjectType.ACCESS,
         secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -48,9 +84,9 @@ export class AuthService {
     );
   }
 
-  generateRefreshToken(user: User): string {
+  generateRefreshToken(userId: number): string {
     return this.jwtService.sign(
-      { id: user.id, provider: user.provider },
+      { id: userId },
       {
         subject: JwtSubjectType.REFRESH,
         secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
