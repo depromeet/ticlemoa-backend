@@ -1,12 +1,13 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthProvider } from '../entities/types/auth-provider.interface';
+import { AuthProvider } from '../entities/types/auth-provider.enum';
 import { UserRepository } from '../user/repository/user.repository';
-import { JwtSubjectType } from './types/jwt.type';
+import { JwtSubjectType } from './types/jwtSubjectType';
 import { ConfigService } from '@nestjs/config';
 import { LoginRequest } from './dto/login-request.dto';
 import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -37,8 +38,8 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async validateJwt(id: number, provider: AuthProvider) {
-    return await this.userRepository.findOneOrFail({ where: { id, provider } });
+  async validateJwt(id: number): Promise<User> {
+    return await this.userRepository.findOneOrFail({ where: { id } });
   }
 
   async getUserByKakaoAccessToken(accessToken: string): Promise<number> {
@@ -64,7 +65,7 @@ export class AuthService {
         email,
         nickname,
         avatarUrl,
-        provider: AuthProvider.kakao,
+        provider: AuthProvider.KAKAO,
       });
       return id;
     }

@@ -25,7 +25,7 @@ export class AuthController {
   // 정식 배포 전까지 액세스 토큰을 원활하게 탐색하기 위해 남겨놓았습니다.
   @Get('kakao')
   @UseGuards(KakaoAuthGuard)
-  deprecatedKakaoLogin() {
+  deprecatedKakaoLogin(): string {
     return 'success';
   }
   @Get('kakao/redirect')
