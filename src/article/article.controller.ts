@@ -8,13 +8,20 @@ import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-a
 @ApiTags('article')
 @Controller('article')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
+  mockOneArticle = new OneArticleResponseDto();
+  constructor(private readonly articleService: ArticleService) {
+    this.mockOneArticle.content = '모킹된 메모 입니다';
+    this.mockOneArticle.link = 'https://www.naver.com';
+    this.mockOneArticle.viewCount = 0;
+    this.mockOneArticle.isPublic = true;
+    this.mockOneArticle.userId = 0;
+  }
 
   //Todo: 가드 작업 완료 후 추가할 예정
   // @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
-    return null;
+  async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
+    return this.mockOneArticle;
   }
 
   @Get()
@@ -24,18 +31,21 @@ export class ArticleController {
     description: '검색을 위한 검색어를 담고 있습니다',
     example: '뇽뇽',
   })
-  findAll(@Query('search') search: string): Promise<ManyArticlesResponseDto> {
-    return null;
+  async findAll(@Query('search') search: string): Promise<ManyArticlesResponseDto> {
+    return { articles: [this.mockOneArticle] };
   }
 
   @Get(':userId')
-  findOne(@Param('userId') id: string): Promise<ManyArticlesResponseDto> {
-    return null;
+  async findOne(@Param('userId') id: string): Promise<ManyArticlesResponseDto> {
+    return { articles: [this.mockOneArticle] };
   }
 
   @Put(':articleId')
-  update(@Param('articleId') id: string, @Body() updateArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
-    return null;
+  async update(
+    @Param('articleId') id: string,
+    @Body() updateArticleDto: CreateArticleDto,
+  ): Promise<OneArticleResponseDto> {
+    return this.mockOneArticle;
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -45,5 +55,5 @@ export class ArticleController {
     example: '1 또는 1,2,3,4',
   })
   @Delete(':articleIds')
-  remove(@Param('ids', new ParseIdsPipe()) id: Array<number>) {}
+  async remove(@Param('ids', new ParseIdsPipe()) id: Array<number>) {}
 }
