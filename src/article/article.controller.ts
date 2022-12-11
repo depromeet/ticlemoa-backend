@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, ParseIntPipe } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
@@ -36,16 +36,16 @@ export class ArticleController {
   }
 
   @Get(':userId')
-  async findOne(@Param('userId') id: string): Promise<ManyArticlesResponseDto> {
+  async findOne(@Param('userId', ParseIntPipe) id: number): Promise<ManyArticlesResponseDto> {
     return { articles: [this.mockOneArticle] };
   }
 
   @Put(':articleId')
   async update(
-    @Param('articleId') id: string,
+    @Param('articleId', ParseIntPipe) id: number,
     @Body() updateArticleDto: CreateArticleDto,
   ): Promise<OneArticleResponseDto> {
-    return this.mockOneArticle;
+    return this.articleService.update(updateArticleDto, id);
   }
 
   // @UseGuards(JwtAuthGuard)

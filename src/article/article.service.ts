@@ -1,4 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Article } from 'src/entities/article.entity';
+import { ArticleMapper } from './domain/ArticleMapper';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { ArticleRepository } from './repository/article.repository';
 
 @Injectable()
 export class ArticleService {
@@ -6,5 +10,10 @@ export class ArticleService {
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
     const article: Article = new ArticleMapper(createArticleDto).getArticle();
+    return await this.articleRepository.save(article);
+  }
+
+  async update(updateArticleDto: CreateArticleDto, id: number) {
+    const article: Article = new ArticleMapper(updateArticleDto, id).getArticle();
     return await this.articleRepository.save(article);
   }
