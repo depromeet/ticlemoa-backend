@@ -5,6 +5,7 @@ import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
 import { ArticleService } from './article.service';
 import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
 import { DeleteResult } from 'typeorm';
+import { Article } from 'src/entities/article.entity';
 
 @ApiTags('article')
 @Controller('article')
@@ -33,7 +34,8 @@ export class ArticleController {
     example: '뇽뇽',
   })
   async findAll(@Query('search') search: string): Promise<ManyArticlesResponseDto> {
-    return { articles: [this.mockOneArticle] };
+    const articles: Article[] = await this.articleService.findAll(search);
+    return { articles };
   }
 
   @Get(':userId')

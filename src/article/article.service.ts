@@ -21,4 +21,12 @@ export class ArticleService {
   async remove(ids: number[]) {
     return await this.articleRepository.delete(ids);
   }
+
+  async findAll(search: string): Promise<Article[]> {
+    return await this.articleRepository
+      .createQueryBuilder('article')
+      .where('article.title LIKE : search', { search })
+      .where('article.content LIKE :search', { search })
+      .execute();
+  }
 }
