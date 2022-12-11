@@ -1,40 +1,25 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { AuthProvider } from './types/auth-provider.interface';
+import { Common } from './common.entity';
+import { AuthProvider } from './types/auth-provider.enum';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Article } from './article.entity';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'varchar', length: 43, nullable: false })
+export class User extends Common {
+  @Column({ type: 'varchar', length: 100 })
   snsId!: string;
 
-  @IsEmail()
   @Column({ type: 'varchar', length: 100, nullable: true })
-  email?: string;
+  email?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 100 })
   nickname!: string;
 
   @Column({ type: 'varchar', nullable: true })
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 
-  @IsString()
-  @IsNotEmpty()
-  @Column({ type: 'enum', enum: AuthProvider, nullable: false })
+  @Column({ type: 'enum', enum: AuthProvider })
   provider!: AuthProvider;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt!: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt!: Date;
-
-  @DeleteDateColumn({ type: 'timestamp' })
-  deletedAt?: Date;
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
 }
