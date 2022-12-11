@@ -1,11 +1,10 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Common } from './common.entity';
 import { AuthProvider } from './types/auth-provider.enum';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Article } from './article.entity';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
+export class User extends Common {
   @Column({ type: 'varchar', length: 100 })
   snsId!: string;
 
@@ -21,12 +20,6 @@ export class User {
   @Column({ type: 'enum', enum: AuthProvider })
   provider!: AuthProvider;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt!: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt!: Date;
-
-  @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deletedAt?: Date | null;
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
 }
