@@ -21,7 +21,7 @@ export class ArticleController {
   // @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
-    return this.mockOneArticle;
+    return await this.articleService.create(createArticleDto);
   }
 
   @Get()
