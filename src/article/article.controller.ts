@@ -4,6 +4,7 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
 import { ArticleService } from './article.service';
 import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('article')
 @Controller('article')
@@ -55,5 +56,7 @@ export class ArticleController {
     example: '1 또는 1,2,3,4',
   })
   @Delete(':articleIds')
-  async remove(@Param('ids', new ParseIdsPipe()) id: Array<number>) {}
+  async remove(@Param('articleIds', ParseIdsPipe) id: number[]): Promise<DeleteResult> {
+    return await this.articleService.remove(id);
+  }
 }

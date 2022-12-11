@@ -17,3 +17,8 @@ export class ArticleService {
     const article: Article = new ArticleMapper(updateArticleDto, id).getArticle();
     return await this.articleRepository.save(article);
   }
+
+  async remove(ids: number[]) {
+    return await this.articleRepository.delete(ids);
+  }
+}
