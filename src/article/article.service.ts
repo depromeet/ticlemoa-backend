@@ -29,4 +29,12 @@ export class ArticleService {
       .where('article.content LIKE :search', { search })
       .execute();
   }
+
+  async findByUser(userId: number): Promise<Article[]> {
+    return await this.articleRepository.find({
+      where: {
+        userId,
+      },
+    });
+  }
 }

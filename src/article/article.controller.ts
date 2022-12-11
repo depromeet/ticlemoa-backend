@@ -39,8 +39,9 @@ export class ArticleController {
   }
 
   @Get(':userId')
-  async findOne(@Param('userId', ParseIntPipe) id: number): Promise<ManyArticlesResponseDto> {
-    return { articles: [this.mockOneArticle] };
+  async findByUser(@Param('userId', ParseIntPipe) userId: number): Promise<ManyArticlesResponseDto> {
+    const articles: Article[] = await this.articleService.findByUser(userId);
+    return { articles };
   }
 
   @Put(':articleId')
