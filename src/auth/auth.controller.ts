@@ -13,7 +13,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
   @Post('*/login')
-  async kakaoLogin(
+  async oauthLogin(
     @Body() loginRequest: LoginRequest,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AccessToken> {
@@ -40,7 +40,7 @@ export class AuthController {
 
   @Get('naver')
   @UseGuards(NaverAuthGuard)
-  deprecatedNaverLogin() {
+  deprecatedNaverLogin(): string {
     return 'success';
   }
   @Get('naver/redirect')
