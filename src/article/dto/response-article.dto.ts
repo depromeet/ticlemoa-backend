@@ -3,14 +3,14 @@ import { ApiProperty } from '@nestjs/swagger';
 export class OneArticleResponseDto {
   link: string;
   @ApiProperty({ nullable: true })
-  title: string;
+  title?: string;
   @ApiProperty({ nullable: true })
-  content: string;
+  content?: string;
   viewCount: number;
   isPublic: boolean;
   userId: number;
   @ApiProperty({ nullable: true })
-  imageUrl: string;
+  imageUrl?: string;
 }
 export class ManyArticlesResponseDto {
   articles: OneArticleResponseDto[];

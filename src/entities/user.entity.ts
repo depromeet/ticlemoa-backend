@@ -1,10 +1,11 @@
 import { Common } from './common.entity';
 import { AuthProvider } from './types/auth-provider.enum';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 
 @Entity()
 export class User extends Common {
+  @Index()
   @Column({ type: 'varchar', length: 100 })
   snsId!: string;
 
