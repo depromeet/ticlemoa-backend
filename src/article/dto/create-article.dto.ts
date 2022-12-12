@@ -5,6 +5,7 @@ export class CreateArticleDto {
   @IsNumber()
   userId: number;
 
+  @IsOptional()
   @IsString()
   title: string;
 
