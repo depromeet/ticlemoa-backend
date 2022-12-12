@@ -30,7 +30,7 @@ export class AuthService {
       }
       default: {
         throw new BadRequestException({
-          message: '지원하지 않는 OAuth 요청입니다.',
+          message: '유효하지 않는 OAuth 요청입니다.',
           statusCode: HttpStatus.BAD_REQUEST,
         });
       }
