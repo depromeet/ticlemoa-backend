@@ -34,7 +34,7 @@ export class AuthController {
   }
   @Get('kakao/redirect')
   @UseGuards(KakaoAuthGuard)
-  deprecatedKakaoRedirect(@UserRequest() accessToken): void {
+  deprecatedKakaoRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
   }
 
@@ -45,7 +45,7 @@ export class AuthController {
   }
   @Get('naver/redirect')
   @UseGuards(NaverAuthGuard)
-  deprecatedNaverRedirect(@UserRequest() accessToken): void {
+  deprecatedNaverRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
   }
 }
