@@ -4,7 +4,7 @@ import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiO
 import { Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
-import { LoginRequest } from './dto/login-request.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
 import { AccessToken } from './types/token-response.interface';
 import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
@@ -19,10 +19,10 @@ export class AuthController {
   @ApiCreatedResponse({ description: '로그인/회원가입 성공' })
   @ApiBadRequestResponse({ description: '유효하지 않은 제공자 혹은, 해당 SNS 로그인에 동의하지 않음' })
   async oauthLogin(
-    @Body() loginRequest: LoginRequest,
+    @Body() loginRequestdto: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AccessToken> {
-    const { accessToken, refreshToken } = await this.authService.login(loginRequest);
+    const { accessToken, refreshToken } = await this.authService.login(loginRequestdto);
 
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,

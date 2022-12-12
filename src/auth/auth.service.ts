@@ -4,7 +4,7 @@ import { AuthProvider } from '../entities/types/auth-provider.enum';
 import { UserRepository } from '../user/repository/user.repository';
 import { JwtSubjectType } from './types/jwtSubjectType';
 import { ConfigService } from '@nestjs/config';
-import { LoginRequest } from './dto/login-request.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
 import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
 import { User } from '../entities/user.entity';
@@ -17,7 +17,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async login(data: LoginRequest): Promise<TokenResponse> {
+  async login(data: LoginRequestDto): Promise<TokenResponse> {
     let userId: number;
     switch (data.vendor) {
       case 'kakao': {
