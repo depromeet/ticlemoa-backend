@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
@@ -13,6 +14,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
 
   @Post('*/login')
+  @ApiOperation({ description: 'OAuth 로그인' })
+  @ApiBody({ description: 'OAuth AccessToken 토큰과 제공자', type: LoginRequestDto })
+  @ApiCreatedResponse({ description: '로그인/회원가입 성공' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 제공자 혹은, 해당 SNS 로그인에 동의하지 않음' })
   async oauthLogin(
     @Body() loginRequest: LoginRequest,
     @Res({ passthrough: true }) res: Response,
@@ -29,22 +34,26 @@ export class AuthController {
   // 정식 배포 전까지 액세스 토큰을 원활하게 탐색하기 위해 남겨놓았습니다.
   @Get('kakao')
   @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ deprecated: true, description: '카카오 계정 테스트를 위한 임시 API' })
   deprecatedKakaoLogin(): string {
     return 'success';
   }
   @Get('kakao/redirect')
   @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ deprecated: true, description: '카카오 계정 테스트를 위한 임시 API - Redirect' })
   deprecatedKakaoRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
   }
 
   @Get('naver')
   @UseGuards(NaverAuthGuard)
+  @ApiOperation({ deprecated: true, description: '네이버 계정 테스트를 위한 임시 API' })
   deprecatedNaverLogin(): string {
     return 'success';
   }
   @Get('naver/redirect')
   @UseGuards(NaverAuthGuard)
+  @ApiOperation({ deprecated: true, description: '네이버 계정 테스트를 위한 임시 API - Redirect' })
   deprecatedNaverRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
   }

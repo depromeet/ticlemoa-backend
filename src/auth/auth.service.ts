@@ -31,7 +31,6 @@ export class AuthService {
       default: {
         throw new BadRequestException({
           message: '유효하지 않는 OAuth 요청입니다.',
-          statusCode: HttpStatus.BAD_REQUEST,
         });
       }
     }
@@ -54,7 +53,6 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException({
         message: '카카오 로그인에 실패했습니다',
-        statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
@@ -87,7 +85,6 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException({
         message: '네이버 로그인에 실패했습니다',
-        statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
