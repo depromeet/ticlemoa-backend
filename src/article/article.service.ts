@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from 'src/entities/article.entity';
+import { DeleteResult } from 'typeorm';
 import { ArticleMapper } from './domain/ArticleMapper';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ArticleRepository } from './repository/article.repository';
@@ -13,19 +14,19 @@ export class ArticleService {
     return await this.articleRepository.save(article);
   }
 
-  async update(updateArticleDto: CreateArticleDto, id: number) {
+  async update(updateArticleDto: CreateArticleDto, id: number): Promise<Article> {
     const article: Article = new ArticleMapper(updateArticleDto, id).getArticle();
     return await this.articleRepository.save(article);
   }
 
-  async remove(ids: number[]) {
-    return await this.articleRepository.delete(ids);
+  async remove(ids: number[]): Promise<DeleteResult> {
+    return await this.articleRepository.softDelete(ids);
   }
 
   async findAll(search: string): Promise<Article[]> {
     return await this.articleRepository
       .createQueryBuilder('article')
-      .where('article.title LIKE : search', { search })
+      .where('article.title LIKE :search', { search })
       .where('article.content LIKE :search', { search })
       .execute();
   }
