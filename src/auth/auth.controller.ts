@@ -6,6 +6,7 @@ import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { AccessToken } from './types/token-response.interface';
+import { GoogleAuthGuard } from './utils/guards/google-auth.guard';
 import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 
