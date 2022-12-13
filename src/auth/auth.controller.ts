@@ -58,4 +58,18 @@ export class AuthController {
   deprecatedNaverRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
   }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ deprecated: true, description: '구글 계정 테스트를 위한 임시 API' })
+  deprecatedGoogleLogin(): string {
+    return 'success';
+  }
+
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  @ApiOperation({ deprecated: true, description: '구글 계정 테스트를 위한 임시 API - Redirect' })
+  deprecatedGoogleRedirect(@UserRequest() accessToken: AccessToken): void {
+    console.log(accessToken);
+  }
 }
