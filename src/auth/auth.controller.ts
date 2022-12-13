@@ -4,7 +4,7 @@ import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation } from
 import { Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
-import { LoginResponseDto } from './dto/created-swagger.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { AccessToken } from './types/token-response.interface';
 import { GoogleAuthGuard } from './utils/guards/google-auth.guard';
