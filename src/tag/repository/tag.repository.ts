@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Tag } from '../../entities/tag.entity';
+import { CreateTagDto } from '../dto/create-tag.dto';
 
 @Injectable()
 export class TagRepository extends Repository<Tag> {
@@ -12,27 +13,25 @@ export class TagRepository extends Repository<Tag> {
     super(Tag, dataSource.createEntityManager(), dataSource.createQueryRunner());
   }
 
-  async createNewTag(tag: Partial<Tag>) {
+  async createNewTag(createTagDto: CreateTagDto): Promise<Tag> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      const existedTag = await this.findOne({ where: { tagName: tag.tagName } });
+      const existedTag: Tag = await this.findOne({ where: { tagName: createTagDto.tagName } });
       if (existedTag) {
         throw new BadRequestException({
           message: '이미 존재하는 태그입니다.',
+          statusCode: HttpStatus.BAD_REQUEST,
         });
       }
-      const createdTag = this.create({ ...tag });
-      await this.save(createdTag);
+      const createdTag: Tag = await this.save({ ...createTagDto });
       await queryRunner.commitTransaction();
       return createdTag;
-    } catch {
+    } catch (err) {
       await queryRunner.rollbackTransaction();
-      throw new BadRequestException({
-        message: '태그 생성 과정에서 오류가 발생하였습니다.',
-      });
+      throw err;
     } finally {
       await queryRunner.release();
     }
