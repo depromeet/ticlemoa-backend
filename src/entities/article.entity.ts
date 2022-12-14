@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { ArticleTag } from './articleTag.entity';
 import { Common } from './common.entity';
 import { User } from './user.entity';
 
@@ -19,10 +20,13 @@ export class Article extends Common {
   @Column()
   isPublic: boolean;
 
+  @Column()
+  userId: number;
+
   @ManyToOne(() => User, (user) => user.articles)
   @JoinColumn()
   user: User;
 
-  @Column()
-  userId: number;
+  @OneToMany(() => ArticleTag, (articleTag) => articleTag.article)
+  articleTags: ArticleTag[];
 }
