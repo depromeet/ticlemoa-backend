@@ -28,6 +28,10 @@ export class AuthService {
         userId = await this.getUserByNaverAccessToken(data.accessToken);
         break;
       }
+      case 'google': {
+        userId = await this.getUserByGoogleAccessToken(data.accessToken);
+        break;
+      }
       default: {
         throw new BadRequestException({
           message: '유효하지 않는 OAuth 요청입니다.',
@@ -100,6 +104,36 @@ export class AuthService {
         nickname,
         avatarUrl,
         provider: AuthProvider.NAVER,
+      });
+      return id;
+    }
+
+    return existedUser.id;
+  }
+
+  async getUserByGoogleAccessToken(accessToken: string): Promise<number> {
+    const user = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: '구글 로그인에 실패했습니다',
+      });
+    }
+
+    const googleData = user.data;
+    const snsId = googleData.id;
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+    if (!existedUser) {
+      const { name: nickname, picture: avatarUrl, email } = googleData;
+      const { id } = await this.userRepository.save({
+        snsId,
+        email,
+        nickname,
+        avatarUrl,
+        provider: AuthProvider.GOOGLE,
       });
       return id;
     }
