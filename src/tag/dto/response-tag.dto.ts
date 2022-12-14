@@ -10,6 +10,6 @@ export class OneTagResponseDto {
   updatedAt: Date;
 }
 
-export class ManyArticlesResponseDto {
+export class ManyTagsResponseDto {
   tags: OneTagResponseDto[];
 }
