@@ -2,6 +2,7 @@ import { Common } from './common.entity';
 import { AuthProvider } from './types/auth-provider.enum';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class User extends Common {
@@ -22,4 +23,7 @@ export class User extends Common {
 
   @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
+
+  @OneToMany(() => Tag, (tag) => tag.user)
+  tags: Tag[];
 }
