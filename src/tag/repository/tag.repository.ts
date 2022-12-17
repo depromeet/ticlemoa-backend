@@ -18,6 +18,6 @@ export class TagRepository extends Repository<Tag> {
         message: '이미 존재하는 태그입니다.',
       });
     }
-    return await this.save(createTagRequestDto);
+    return await this.save({ userId, tagName });
   }
 }
