@@ -20,12 +20,12 @@ export class Article extends Common {
   @Column()
   isPublic: boolean;
 
-  @Column()
-  userId: number;
-
   @ManyToOne(() => User, (user) => user.articles)
   @JoinColumn()
   user: User;
+
+  @Column()
+  userId: number;
 
   @OneToMany(() => ArticleTag, (articleTag) => articleTag.article)
   articleTags: ArticleTag[];

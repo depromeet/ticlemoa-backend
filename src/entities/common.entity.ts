@@ -10,6 +10,6 @@ export abstract class Common {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  @DeleteDateColumn({ type: 'timestamp' })
+  @DeleteDateColumn({ type: 'timestamp', select: false })
   deletedAt?: Date;
 }
