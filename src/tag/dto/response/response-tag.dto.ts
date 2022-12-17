@@ -25,6 +25,4 @@ export class OneTagResponseDto {
   }
 }
 
-export class ManyTagsResponseDto {
-  tags: OneTagResponseDto[];
-}
+export type ManyTagsResponseDto = OneTagResponseDto[];
