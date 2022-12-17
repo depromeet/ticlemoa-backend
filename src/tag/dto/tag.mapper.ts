@@ -1,6 +1,6 @@
 import { Tag } from '../../entities/tag.entity';
 import { User } from '../../entities/user.entity';
-import { OneTagResponseDto } from './response/response-tag.dto';
+import { ManyTagsResponseDto, OneTagResponseDto } from './response/response-tag.dto';
 
 export class TagDtoMapper {
   static toResponseDto({ tag, user }: { tag: Tag; user: User }): OneTagResponseDto {
@@ -13,7 +13,7 @@ export class TagDtoMapper {
     });
   }
 
-  static toResponseDtoList({ tags, user }: { tags: Tag[]; user: User }): OneTagResponseDto[] {
+  static toResponseDtoList({ tags, user }: { tags: Tag[]; user: User }): ManyTagsResponseDto {
     return tags.map((tag) => this.toResponseDto({ tag, user }));
   }
 }
