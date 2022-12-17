@@ -7,7 +7,7 @@ import { TagRepository } from './repository/tag.repository';
 export class TagService {
   constructor(private readonly tagRepository: TagRepository) {}
 
-  async createTag(userId: number, createTagDto: CreateTagRequestDto): Promise<Tag> {
-    return await this.tagRepository.createOneTag({ userId, tagName: createTagDto.tagName });
+  async createTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+    return await this.tagRepository.createOneTag(userId, createTagRequestDto);
   }
 }
