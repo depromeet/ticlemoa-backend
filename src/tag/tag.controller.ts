@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/utils/guards/jwt-auth.guard';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { User } from '../entities/user.entity';
 import { TagDtoMapper } from './dto/tag.mapper';
-import { PaginationRequestDto } from './dto/pagination-request.dto';
+import { PaginationRequestDto } from './dto/pagination/pagination-request.dto';
 import { CreateTagRequestDto } from './dto/request/request-tag.dto';
 import { OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagService } from './tag.service';
@@ -34,6 +34,8 @@ export class TagController {
     @UserRequest() user: User,
     @Query() { ...paginationRequestDto }: PaginationRequestDto,
   ): Promise<OneTagResponseDto[]> {
-    return await this.tagService.findAllTags(user.id, paginationRequestDto);
+    const tags = await this.tagService.findAllTags(user.id, paginationRequestDto);
+
+    return TagDtoMapper.toResponseDtoList({ tags, user });
   }
 }
