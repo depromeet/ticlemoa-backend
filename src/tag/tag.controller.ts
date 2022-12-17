@@ -3,8 +3,8 @@ import { ApiBadRequestResponse, ApiCreatedResponse, ApiOperation, ApiTags } from
 import { JwtAuthGuard } from '../auth/utils/guards/jwt-auth.guard';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { User } from '../entities/user.entity';
-import { CreateTagRequestDto } from './dto/request-tag.dto';
-import { OneTagResponseDto } from './dto/response-tag.dto';
+import { CreateTagRequestDto } from './dto/request/request-tag.dto';
+import { OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagDtoMapper } from './dto/tag.mapper';
 import { TagService } from './tag.service';
 

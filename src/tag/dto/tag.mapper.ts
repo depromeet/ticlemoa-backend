@@ -1,6 +1,6 @@
 import { Tag } from '../../entities/tag.entity';
 import { User } from '../../entities/user.entity';
-import { OneTagResponseDto } from './response-tag.dto';
+import { OneTagResponseDto } from './response/response-tag.dto';
 
 export class TagDtoMapper {
   static toResponseDto({ tag, user }: { tag: Tag; user: User }): OneTagResponseDto {

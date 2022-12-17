@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Tag } from '../../entities/tag.entity';
-import { CreateTagDto } from '../dto/create-tag.dto';
+import { CreateTagDto } from '../dto/request/create-tag.dto';
 
 @Injectable()
 export class TagRepository extends Repository<Tag> {
