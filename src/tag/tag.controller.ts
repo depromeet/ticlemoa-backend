@@ -5,7 +5,7 @@ import { UserRequest } from '../common/decorators/user-request.decorator';
 import { User } from '../entities/user.entity';
 import { TagDtoMapper } from './dto/tag.mapper';
 import { PaginationRequestDto } from './dto/pagination/pagination-request.dto';
-import { CreateTagRequestDto } from './dto/request/request-tag.dto';
+import { CreateTagRequestDto } from './dto/request/create-tag-request.dto';
 import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagService } from './tag.service';
 
