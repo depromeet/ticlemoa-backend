@@ -8,11 +8,11 @@ export class Article extends Common {
   @Column()
   link: string;
 
-  @Column()
-  title: string;
+  @Column({ nullable: true })
+  title?: string;
 
-  @Column()
-  content: string;
+  @Column({ nullable: true })
+  content?: string;
 
   @Column({ default: 0 })
   viewCount: number;
