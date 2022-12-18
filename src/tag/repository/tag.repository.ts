@@ -11,7 +11,7 @@ export class TagRepository extends Repository<Tag> {
     super(tagRepository.target, tagRepository.manager, tagRepository.queryRunner);
   }
 
-  async createOneTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+  async createOne(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
     const { tagName } = createTagRequestDto;
     const existedTag: Tag = await this.findOne({ where: { tagName, userId } });
     if (existedTag) {
@@ -22,8 +22,12 @@ export class TagRepository extends Repository<Tag> {
     return await this.save({ userId, tagName });
   }
 
-  async findAllTags(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
-    const { page = 1, take = 10 } = paginationRequestDto;
-    return this.find({ where: { userId }, take, skip: take * (page - 1), order: { createdAt: 'DESC' } });
+  async findAll(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
+    const { page, take } = paginationRequestDto;
+    const query = this.createQueryBuilder('tag').where('tag.user_id = :userId', { userId });
+    if (page && take) {
+      query.take(take).skip(take * (page - 1));
+    }
+    return query.getMany();
   }
 }
