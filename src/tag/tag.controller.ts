@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt-auth.guard';
 import { UserRequest } from '../common/decorators/user-request.decorator';
@@ -8,6 +8,7 @@ import { PaginationRequestDto } from './dto/pagination/pagination-request.dto';
 import { CreateTagRequestDto } from './dto/request/create-tag-request.dto';
 import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagService } from './tag.service';
+import { UpdateTagRequestDto } from './dto/request/update-tag-request.dto';
 
 @ApiTags('tag')
 @Controller('tag')
@@ -54,5 +55,15 @@ export class TagController {
     const tags = await this.tagService.findAllTags(user.id, paginationRequestDto);
 
     return TagDtoMapper.toResponseDtoList({ tags, user });
+  }
+
+  @Patch(':tagId')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @UserRequest() user: User,
+    @Param('tagId', ParseIntPipe) tagId: number,
+    @Body() updateTagRequestDto: UpdateTagRequestDto,
+  ): Promise<boolean> {
+    return this.tagService.updateTag(user.id, tagId, updateTagRequestDto);
   }
 }
