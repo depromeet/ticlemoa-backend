@@ -10,7 +10,7 @@ export class TagRepository extends Repository<Tag> {
     super(tagRepository.target, tagRepository.manager, tagRepository.queryRunner);
   }
 
-  async createOneTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+  async createOne(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
     const { tagName } = createTagRequestDto;
     const existedTag: Tag = await this.findOne({ where: { tagName, userId } });
     if (existedTag) {

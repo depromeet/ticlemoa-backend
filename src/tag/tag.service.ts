@@ -8,6 +8,6 @@ export class TagService {
   constructor(private readonly tagRepository: TagRepository) {}
 
   async createTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
-    return await this.tagRepository.createOneTag(userId, createTagRequestDto);
+    return await this.tagRepository.createOne(userId, createTagRequestDto);
   }
 }
