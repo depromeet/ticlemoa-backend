@@ -6,14 +6,14 @@ export class PaginationRequestDto {
   @Type(() => Number)
   @IsOptional()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   @ApiPropertyOptional({ description: '페이지네이션 페이지' })
-  page?: number = 1;
+  page?: number;
 
   @Type(() => Number)
   @IsOptional()
   @IsNumber()
   @Min(1)
   @ApiPropertyOptional({ description: '페이지네이션 개수' })
-  take?: number = 10;
+  take?: number;
 }
