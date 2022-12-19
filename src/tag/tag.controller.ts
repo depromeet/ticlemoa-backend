@@ -1,5 +1,13 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt-auth.guard';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { User } from '../entities/user.entity';
@@ -59,6 +67,9 @@ export class TagController {
 
   @Patch(':tagId')
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ description: '태그 수정에 성공했습니다.', type: OneTagResponseDto })
+  @ApiNotFoundResponse({ description: '요청에 맞는 태그가 존재하지 않습니다.' })
+  @ApiParam({ name: 'tagId', description: '태그의 id를 사용하여 업데이트 합니다.', example: 1 })
   async update(
     @UserRequest() user: User,
     @Param('tagId', ParseIntPipe) tagId: number,
