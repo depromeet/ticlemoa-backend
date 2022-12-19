@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Tag } from '../entities/tag.entity';
 import { PaginationRequestDto } from './dto/pagination/pagination-request.dto';
 import { CreateTagRequestDto } from './dto/request/create-tag-request.dto';
@@ -17,9 +17,16 @@ export class TagService {
     return await this.tagRepository.findAll(userId, paginationRequestDto);
   }
 
-  async updateTag(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto) {
+  async updateTag(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
     const { tagName } = updateTagRequestDto;
-    const updatedTag = await this.tagRepository.update({ userId, id: tagId }, { tagName });
-    return updatedTag.affected === 1;
+    const updatedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
+    if (!updatedTag) {
+      throw new NotFoundException({
+        message: '요청한 태그가 존재하지 않습니다.',
+      });
+    }
+    await this.tagRepository.update({ userId, id: tagId }, { tagName });
+    updatedTag.tagName = tagName;
+    return updatedTag;
   }
 }
