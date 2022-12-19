@@ -63,7 +63,9 @@ export class TagController {
     @UserRequest() user: User,
     @Param('tagId', ParseIntPipe) tagId: number,
     @Body() updateTagRequestDto: UpdateTagRequestDto,
-  ): Promise<boolean> {
-    return this.tagService.updateTag(user.id, tagId, updateTagRequestDto);
+  ): Promise<OneTagResponseDto> {
+    const tag = await this.tagService.updateTag(user.id, tagId, updateTagRequestDto);
+
+    return TagDtoMapper.toResponseDto({ tag, user });
   }
 }
