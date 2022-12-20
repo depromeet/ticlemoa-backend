@@ -54,7 +54,7 @@ export class TagController {
   @ApiOkResponse({ description: '태그 수정에 성공했습니다.', type: OneTagResponseDto })
   @ApiNotFoundResponse({ description: '요청에 맞는 태그가 존재하지 않습니다.' })
   @ApiParam({ name: 'tagId', description: '태그의 id를 사용하여 업데이트 합니다.', example: 1 })
-  async update(
+  async updateTag(
     @UserRequest() user: User,
     @Param('tagId', ParseIntPipe) tagId: number,
     @Body() updateTagRequestDto: UpdateTagRequestDto,
