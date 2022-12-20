@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from '../../entities/tag.entity';
 import { PaginationRequestDto } from '../dto/pagination/pagination-request.dto';
-import { CreateTagRequestDto } from '../dto/request/request-tag.dto';
+import { CreateTagRequestDto } from '../dto/request/create-tag-request.dto';
 
 @Injectable()
 export class TagRepository extends Repository<Tag> {
