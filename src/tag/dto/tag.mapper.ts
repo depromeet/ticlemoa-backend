@@ -14,6 +14,6 @@ export class TagDtoMapper {
   }
 
   static toResponseDtoList({ tags, user }: { tags: Tag[]; user: User }): ManyTagsResponseDto {
-    return tags.map((tag) => this.toResponseDto({ tag, user }));
+    return { tags: tags.map((tag) => this.toResponseDto({ tag, user })) };
   }
 }

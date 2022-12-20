@@ -23,7 +23,11 @@ export class TagRepository extends Repository<Tag> {
   }
 
   async findAll(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
-    const { page = 1, take = 10 } = paginationRequestDto;
-    return this.find({ where: { userId }, take, skip: take * (page - 1), order: { createdAt: 'DESC' } });
+    const { page, take } = paginationRequestDto;
+    const query = this.createQueryBuilder('tag').where('tag.user_id = :userId', { userId });
+    if (page && take) {
+      query.take(take).skip(take * (page - 1));
+    }
+    return query.getMany();
   }
 }

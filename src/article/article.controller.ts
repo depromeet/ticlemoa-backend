@@ -1,27 +1,22 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query, ParseIntPipe } from '@nestjs/common';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
 import { ArticleService } from './article.service';
 import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { DeleteResult } from 'typeorm';
+import { Article } from 'src/entities/article.entity';
 
 @ApiTags('article')
 @Controller('article')
 export class ArticleController {
-  mockOneArticle = new OneArticleResponseDto();
-  constructor(private readonly articleService: ArticleService) {
-    this.mockOneArticle.content = '모킹된 메모 입니다';
-    this.mockOneArticle.link = 'https://www.naver.com';
-    this.mockOneArticle.viewCount = 0;
-    this.mockOneArticle.isPublic = true;
-    this.mockOneArticle.userId = 0;
-  }
+  constructor(private readonly articleService: ArticleService) {}
 
   //Todo: 가드 작업 완료 후 추가할 예정
   // @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
-    return this.mockOneArticle;
+    return await this.articleService.create(createArticleDto);
   }
 
   @Get()
@@ -32,20 +27,22 @@ export class ArticleController {
     example: '뇽뇽',
   })
   async findAll(@Query('search') search: string): Promise<ManyArticlesResponseDto> {
-    return { articles: [this.mockOneArticle] };
+    const articles: Article[] = await this.articleService.findAll(search);
+    return { articles };
   }
 
   @Get(':userId')
-  async findOne(@Param('userId') id: string): Promise<ManyArticlesResponseDto> {
-    return { articles: [this.mockOneArticle] };
+  async findByUser(@Param('userId', ParseIntPipe) userId: number): Promise<ManyArticlesResponseDto> {
+    const articles: Article[] = await this.articleService.findByUser(userId);
+    return { articles };
   }
 
   @Put(':articleId')
   async update(
-    @Param('articleId') id: string,
+    @Param('articleId', ParseIntPipe) id: number,
     @Body() updateArticleDto: CreateArticleDto,
   ): Promise<OneArticleResponseDto> {
-    return this.mockOneArticle;
+    return this.articleService.update(updateArticleDto, id);
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -55,5 +52,7 @@ export class ArticleController {
     example: '1 또는 1,2,3,4',
   })
   @Delete(':articleIds')
-  async remove(@Param('ids', new ParseIdsPipe()) id: Array<number>) {}
+  async remove(@Param('articleIds', ParseIdsPipe) id: number[]): Promise<DeleteResult> {
+    return await this.articleService.remove(id);
+  }
 }

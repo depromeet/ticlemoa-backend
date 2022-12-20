@@ -36,26 +36,10 @@ export class TagController {
 
     return TagDtoMapper.toResponseDto({ tag, user });
   }
-
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '모든 태그를 조회합니다. 쿼리에 값을 넣어 페이지네이션도 할 수 있습니다.' })
-  @ApiOkResponse({
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        example: {
-          userId: 1,
-          id: 18,
-          tagName: '디프만 최고18',
-          createdAt: '2022-12-17T17:18:19.014Z',
-          updatedAt: '2022-12-17T17:18:19.014Z',
-        },
-      },
-    },
-    description: '태그 조회 성공하여 객체 배열을 반환합니다.',
-  })
+  @ApiOkResponse({ description: '조회에 성공하여 태그 오브젝트를 배열로 반환합니다.', type: ManyTagsResponseDto })
   async findAllTags(
     @UserRequest() user: User,
     @Query() { ...paginationRequestDto }: PaginationRequestDto,
