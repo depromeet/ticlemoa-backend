@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
@@ -78,5 +78,17 @@ export class AuthController {
   @ApiOperation({ deprecated: true, description: '구글 계정 테스트를 위한 임시 API - Redirect' })
   deprecatedGoogleRedirect(@UserRequest() accessToken: AccessToken): void {
     console.log(accessToken);
+  }
+
+  @Get('testingapi')
+  @ApiExcludeEndpoint()
+  test(@Res({ passthrough: true }) res: Response) {
+    const accessToken = this.authService.generateAccessToken(1);
+    const refreshToken = this.authService.generateRefreshToken(1);
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
+    });
+    return { accessToken };
   }
 }

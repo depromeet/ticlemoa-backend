@@ -1,11 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/utils/guards/jwt-auth.guard';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { User } from '../entities/user.entity';
-import { CreateTagRequestDto } from './dto/request/request-tag.dto';
-import { OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagDtoMapper } from './dto/tag.mapper';
+import { PaginationRequestDto } from './dto/pagination/pagination-request.dto';
+import { CreateTagRequestDto } from './dto/request/request-tag.dto';
+import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagService } from './tag.service';
 
 @ApiTags('tag')
@@ -25,5 +26,18 @@ export class TagController {
     const tag = await this.tagService.createTag(user.id, createTagRequest);
 
     return TagDtoMapper.toResponseDto({ tag, user });
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: '모든 태그를 조회합니다. 쿼리에 값을 넣어 페이지네이션도 할 수 있습니다.' })
+  @ApiOkResponse({ description: '조회에 성공하여 태그 오브젝트를 배열로 반환합니다.', type: ManyTagsResponseDto })
+  async findAllTags(
+    @UserRequest() user: User,
+    @Query() { ...paginationRequestDto }: PaginationRequestDto,
+  ): Promise<ManyTagsResponseDto> {
+    const tags = await this.tagService.findAllTags(user.id, paginationRequestDto);
+
+    return TagDtoMapper.toResponseDtoList({ tags, user });
   }
 }

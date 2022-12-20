@@ -26,5 +26,17 @@ export class OneTagResponseDto {
 }
 
 export class ManyTagsResponseDto {
+  @ApiProperty({
+    description: '태그 오브젝트 리스트',
+    example: [
+      {
+        id: 18,
+        userId: 14,
+        tagName: '디프만 짱',
+        createdAt: '2022-12-17T17:18:19.014Z',
+        updatedAt: '2022-12-17T17:18:19.014Z',
+      },
+    ],
+  })
   tags: OneTagResponseDto[];
 }
