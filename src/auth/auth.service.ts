@@ -1,10 +1,10 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthProvider } from '../entities/types/auth-provider.enum';
 import { UserRepository } from '../user/repository/user.repository';
 import { JwtSubjectType } from './types/jwtSubjectType';
 import { ConfigService } from '@nestjs/config';
-import { LoginRequest } from './dto/login-request.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
 import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
 import { User } from '../entities/user.entity';
@@ -17,17 +17,24 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async login(data: LoginRequest): Promise<TokenResponse> {
+  async login(data: LoginRequestDto): Promise<TokenResponse> {
     let userId: number;
     switch (data.vendor) {
       case 'kakao': {
         userId = await this.getUserByKakaoAccessToken(data.accessToken);
         break;
       }
+      case 'naver': {
+        userId = await this.getUserByNaverAccessToken(data.accessToken);
+        break;
+      }
+      case 'google': {
+        userId = await this.getUserByGoogleAccessToken(data.accessToken);
+        break;
+      }
       default: {
         throw new BadRequestException({
-          message: '지원하지 않는 OAuth 요청입니다.',
-          statusCode: HttpStatus.BAD_REQUEST,
+          message: '유효하지 않는 OAuth 요청입니다.',
         });
       }
     }
@@ -50,15 +57,16 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException({
         message: '카카오 로그인에 실패했습니다',
-        statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const snsId = String(user.data.id);
+
+    const kakaoData = user.data;
+    const snsId = String(kakaoData.id);
     const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
-      const { nickname, profile_image: avatarUrl } = user.data.properties;
-      const kakaoAccount = user.data.kakao_account;
+      const { nickname, profile_image: avatarUrl } = kakaoData.properties;
+      const kakaoAccount = kakaoData.kakao_account;
       const email = kakaoAccount.has_email && !kakaoAccount.email_needs_agreement ? kakaoAccount.email : null;
       const { id } = await this.userRepository.save({
         snsId,
@@ -66,6 +74,66 @@ export class AuthService {
         nickname,
         avatarUrl,
         provider: AuthProvider.KAKAO,
+      });
+      return id;
+    }
+
+    return existedUser.id;
+  }
+
+  async getUserByNaverAccessToken(accessToken: string): Promise<number> {
+    const user = await axios.get('https://openapi.naver.com/v1/nid/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: '네이버 로그인에 실패했습니다',
+      });
+    }
+
+    const naverResponse = user.data.response;
+    const snsId = naverResponse.id;
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+    if (!existedUser) {
+      const { nickname, profile_image: avatarUrl, email } = naverResponse;
+      const { id } = await this.userRepository.save({
+        snsId,
+        email,
+        nickname,
+        avatarUrl,
+        provider: AuthProvider.NAVER,
+      });
+      return id;
+    }
+
+    return existedUser.id;
+  }
+
+  async getUserByGoogleAccessToken(accessToken: string): Promise<number> {
+    const user = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: '구글 로그인에 실패했습니다',
+      });
+    }
+
+    const googleData = user.data;
+    const snsId = googleData.id;
+    const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+    if (!existedUser) {
+      const { name: nickname, picture: avatarUrl, email } = googleData;
+      const { id } = await this.userRepository.save({
+        snsId,
+        email,
+        nickname,
+        avatarUrl,
+        provider: AuthProvider.GOOGLE,
       });
       return id;
     }
