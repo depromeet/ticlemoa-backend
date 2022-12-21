@@ -49,6 +49,10 @@ jobs:
           echo JWT_REFRESH_TOKEN_EXPIRATION_TIME=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_TIME }} >> .env
           echo KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} >> .env
           echo KAKAO_SECRET=${{ secrets.KAKAO_SECRET }} >> .env
+          echo GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} >> .env
+          echo GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} >> .env
+          echo NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} >> .env
+          echo NAVER_SECRET=${{ secrets.NAVER_SECRET }} >> .env
           cat .env
 
       - name: Build, tag, and push image to Amazon ECR
