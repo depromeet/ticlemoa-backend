@@ -19,14 +19,15 @@ export class TagService {
 
   async updateTag(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
     const { tagName } = updateTagRequestDto;
-    const updatedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
-    if (!updatedTag) {
+    const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
+    if (!existedTag) {
       throw new NotFoundException({
         message: '요청한 태그가 존재하지 않습니다.',
       });
     }
     await this.tagRepository.update({ userId, id: tagId }, { tagName });
-    updatedTag.tagName = tagName;
-    return updatedTag;
+    existedTag.tagName = tagName;
+    return existedTag;
+  }
   }
 }
