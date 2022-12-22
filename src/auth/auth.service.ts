@@ -19,24 +19,30 @@ export class AuthService {
 
   async login(data: LoginRequestDto): Promise<TokenResponse> {
     let userId: number;
-    switch (data.vendor) {
-      case 'kakao': {
-        userId = await this.getUserByKakaoAccessToken(data.accessToken);
-        break;
+    try {
+      switch (data.vendor) {
+        case 'kakao': {
+          userId = await this.getUserByKakaoAccessToken(data.accessToken);
+          break;
+        }
+        case 'naver': {
+          userId = await this.getUserByNaverAccessToken(data.accessToken);
+          break;
+        }
+        case 'google': {
+          userId = await this.getUserByGoogleAccessToken(data.accessToken);
+          break;
+        }
+        default: {
+          throw new BadRequestException({
+            message: '제공하지 않는 OAuth 요청입니다.',
+          });
+        }
       }
-      case 'naver': {
-        userId = await this.getUserByNaverAccessToken(data.accessToken);
-        break;
-      }
-      case 'google': {
-        userId = await this.getUserByGoogleAccessToken(data.accessToken);
-        break;
-      }
-      default: {
-        throw new BadRequestException({
-          message: '유효하지 않는 OAuth 요청입니다.',
-        });
-      }
+    } catch (error) {
+      throw new BadRequestException({
+        message: '유효하지 않는 OAuth 요청입니다.',
+      });
     }
 
     const accessToken = this.generateAccessToken(userId);
