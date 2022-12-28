@@ -9,15 +9,15 @@ import { TagRepository } from './repository/tag.repository';
 export class TagService {
   constructor(private readonly tagRepository: TagRepository) {}
 
-  async createTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+  async create(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
     return await this.tagRepository.createOne(userId, createTagRequestDto);
   }
 
-  async findAllTags(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
+  async findAll(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
     return await this.tagRepository.findAll(userId, paginationRequestDto);
   }
 
-  async updateTag(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
+  async update(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
     const { tagName } = updateTagRequestDto;
     const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
     if (!existedTag) {
@@ -30,7 +30,7 @@ export class TagService {
     return existedTag;
   }
 
-  async deleteTag(userId: number, tagId: number) {
+  async remove(userId: number, tagId: number) {
     const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
     if (!existedTag) {
       throw new NotFoundException({
