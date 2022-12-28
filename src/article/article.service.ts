@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { BlacklistRepository } from 'src/blacklist/repository/blacklist.repository';
 import { Article } from 'src/entities/article.entity';
 import { ArticleTag } from 'src/entities/articleTag.entity';
 import { DeleteResult } from 'typeorm';
@@ -12,6 +13,7 @@ export class ArticleService {
   constructor(
     private readonly articleRepository: ArticleRepository,
     private readonly articleTagRepository: ArticleTagRepository,
+    private readonly blacklistRepository: BlacklistRepository,
   ) {}
 
   async create(createArticleDto: CreateArticleDto): Promise<Article> {
@@ -33,15 +35,20 @@ export class ArticleService {
   }
 
   async remove(ids: number[], userId: number): Promise<DeleteResult> {
+    //todo: 자기가 작성한 user가 아니라면 예외
     return await this.articleRepository.softDelete(ids);
   }
 
-  async findAll(search: string): Promise<Article[]> {
-    return await this.articleRepository
+  async findAll(userId: number, search: string): Promise<Article[]> {
+    const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
+    const blacklistIds: number[] = blacklists.map((it) => it.targetId);
+    const articles: Article[] = await this.articleRepository
       .createQueryBuilder('article')
       .where('article.title LIKE :search', { search })
       .where('article.content LIKE :search', { search })
       .execute();
+
+    return articles.filter((article) => !blacklistIds.includes(article.userId));
   }
 
   async findByUser(userId: number): Promise<Article[]> {

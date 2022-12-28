@@ -22,14 +22,18 @@ export class ArticleController {
   }
 
   @Get()
+  @Auth()
   @ApiQuery({
     name: 'search',
     required: false,
     description: '검색을 위한 검색어를 담고 있습니다',
     example: '뇽뇽',
   })
-  async findAll(@Query('search') search: string): Promise<ManyArticlesResponseDto> {
-    const articles: Article[] = await this.articleService.findAll(search);
+  async findAll(
+    @Query('search') search: string,
+    @UserRequest() { userId }: UserPayload,
+  ): Promise<ManyArticlesResponseDto> {
+    const articles: Article[] = await this.articleService.findAll(userId, search);
     return { articles };
   }
 
