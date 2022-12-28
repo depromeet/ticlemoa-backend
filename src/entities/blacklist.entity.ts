@@ -1,13 +1,9 @@
 import { Common } from './common.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
-import { Article } from './article.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
 export class Blacklist extends Common {
-  @Column({ type: 'varchar', length: 400 })
-  content!: string;
-
   @Column()
   userId: number;
 
