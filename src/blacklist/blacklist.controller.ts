@@ -12,10 +12,7 @@ export class BlacklistController {
   constructor(private readonly blacklistService: BlacklistService) {}
 
   @Post()
-  async create(
-    @UserRequest() user: User,
-    @Body() createBlacklistDto: CreateBlacklistDto,
-  ): Promise<ResponseBlacklistDto> {
-    return await this.blacklistService.create(user, createBlacklistDto);
+  create(@UserRequest() user: User, @Body() createBlacklistDto: CreateBlacklistDto): Promise<ResponseBlacklistDto> {
+    return this.blacklistService.create(user, createBlacklistDto);
   }
 }
