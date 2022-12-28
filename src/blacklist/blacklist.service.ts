@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBlacklistDto } from './dto/create-blacklist.dto';
-import { BlacklistRepository } from './repository/blacklist.repository';
 import { ResponseBlacklistDto } from './dto/response-blacklist.dto';
-import { User } from 'src/entities/user.entity';
+import { BlacklistRepository } from './repository/blacklist.repository';
 
 @Injectable()
 export class BlacklistService {
@@ -12,8 +11,8 @@ export class BlacklistService {
     private readonly blacklistRepository: BlacklistRepository,
   ) {}
 
-  async create(user: User, createBlacklistDto: CreateBlacklistDto): Promise<ResponseBlacklistDto> {
-    const blacklist = await this.blacklistRepository.createBlacklist(user, createBlacklistDto);
+  async create(userId: number, createBlacklistDto: CreateBlacklistDto): Promise<ResponseBlacklistDto> {
+    const blacklist = await this.blacklistRepository.createBlacklist(userId, createBlacklistDto);
     return blacklist;
   }
 }

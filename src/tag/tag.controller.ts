@@ -17,6 +17,7 @@ import { CreateTagRequestDto } from './dto/request/create-tag-request.dto';
 import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-tag.dto';
 import { TagService } from './tag.service';
 import { UpdateTagRequestDto } from './dto/request/update-tag-request.dto';
+import { UserPayload } from 'src/auth/types/jwt-payload.interface';
 
 @ApiTags('Tag')
 @Controller('tag')
@@ -67,7 +68,7 @@ export class TagController {
   @ApiOkResponse({ description: '태그 삭제에 성공했습니다.' })
   @ApiNotFoundResponse({ description: '요청에 맞는 태그가 존재하지 않습니다.' })
   @ApiParam({ name: 'tagId', description: '태그의 id를 사용하여 삭제 합니다.', example: 1 })
-  async remove(@UserRequest() user: User, @Param('tagId', ParseIntPipe) tagId: number): Promise<void> {
-    await this.tagService.remove(user.id, tagId);
+  async remove(@UserRequest() { userId }: UserPayload, @Param('tagId', ParseIntPipe) tagId: number): Promise<void> {
+    await this.tagService.remove(userId, tagId);
   }
 }

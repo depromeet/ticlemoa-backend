@@ -3,7 +3,6 @@ import { Blacklist } from 'src/entities/blacklist.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateBlacklistDto } from '../dto/create-blacklist.dto';
 import { ResponseBlacklistDto } from '../dto/response-blacklist.dto';
-import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class BlacklistRepository extends Repository<Blacklist> {
@@ -11,8 +10,7 @@ export class BlacklistRepository extends Repository<Blacklist> {
     super(Blacklist, dataSource.createEntityManager(), dataSource.createQueryRunner());
   }
 
-  async createBlacklist(user: User, createBlacklistDto: CreateBlacklistDto): Promise<ResponseBlacklistDto> {
-    const userId = user.id;
+  async createBlacklist(userId: number, createBlacklistDto: CreateBlacklistDto): Promise<ResponseBlacklistDto> {
     const { targetId } = createBlacklistDto;
     return await this.save({ userId, targetId });
   }
