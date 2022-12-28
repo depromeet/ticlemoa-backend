@@ -18,7 +18,7 @@ import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-
 import { TagService } from './tag.service';
 import { UpdateTagRequestDto } from './dto/request/update-tag-request.dto';
 
-@ApiTags('tag')
+@ApiTags('Tag')
 @Controller('tag')
 export class TagController {
   constructor(private readonly tagService: TagService) {}

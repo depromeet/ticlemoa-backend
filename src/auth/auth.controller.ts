@@ -1,6 +1,13 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiExcludeEndpoint,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
@@ -11,6 +18,7 @@ import { GoogleAuthGuard } from './utils/guards/google-auth.guard';
 import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {}
