@@ -7,7 +7,7 @@ import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-a
 import { DeleteResult } from 'typeorm';
 import { Article } from 'src/entities/article.entity';
 
-@ApiTags('article')
+@ApiTags('Article')
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}

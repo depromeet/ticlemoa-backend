@@ -13,7 +13,7 @@ export class ArticleMapper {
     this.article.link = articleCreateDto.url;
     //Todo : userId 생성 과정을 밟고 난 이후에는 수정할 것
     // this.article.userId = articleCreateDto.userId;
-    this.article.userId = 1;
+    this.article.userId = articleCreateDto.userId;
     if (id) {
       this.article.id = id;
     }

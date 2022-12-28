@@ -18,7 +18,7 @@ import { ManyTagsResponseDto, OneTagResponseDto } from './dto/response/response-
 import { TagService } from './tag.service';
 import { UpdateTagRequestDto } from './dto/request/update-tag-request.dto';
 
-@ApiTags('tag')
+@ApiTags('Tag')
 @Controller('tag')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
@@ -36,6 +36,7 @@ export class TagController {
 
     return TagDtoMapper.toResponseDto({ tag, user });
   }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: '모든 태그를 조회합니다. 쿼리에 값을 넣어 페이지네이션도 할 수 있습니다.' })
