@@ -4,3 +4,7 @@ export interface JwtPayload {
   id: number;
   provider: AuthProvider;
 }
+
+export interface UserPayload {
+  userId: number;
+}
