@@ -9,24 +9,34 @@ import { TagRepository } from './repository/tag.repository';
 export class TagService {
   constructor(private readonly tagRepository: TagRepository) {}
 
-  async createTag(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
+  async create(userId: number, createTagRequestDto: CreateTagRequestDto): Promise<Tag> {
     return await this.tagRepository.createOne(userId, createTagRequestDto);
   }
 
-  async findAllTags(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
+  async findAll(userId: number, paginationRequestDto: PaginationRequestDto): Promise<Tag[]> {
     return await this.tagRepository.findAll(userId, paginationRequestDto);
   }
 
-  async updateTag(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
+  async update(userId: number, tagId: number, updateTagRequestDto: UpdateTagRequestDto): Promise<Tag> {
     const { tagName } = updateTagRequestDto;
-    const updatedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
-    if (!updatedTag) {
+    const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
+    if (!existedTag) {
       throw new NotFoundException({
         message: '요청한 태그가 존재하지 않습니다.',
       });
     }
     await this.tagRepository.update({ userId, id: tagId }, { tagName });
-    updatedTag.tagName = tagName;
-    return updatedTag;
+    existedTag.tagName = tagName;
+    return existedTag;
+  }
+
+  async remove(userId: number, tagId: number) {
+    const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
+    if (!existedTag) {
+      throw new NotFoundException({
+        message: '요청한 태그가 존재하지 않습니다.',
+      });
+    }
+    await this.tagRepository.softDelete({ userId, id: tagId });
   }
 }

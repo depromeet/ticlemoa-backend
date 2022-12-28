@@ -48,7 +48,7 @@ export class AuthService {
     const accessToken = this.generateAccessToken(userId);
     const refreshToken = this.generateRefreshToken(userId);
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, userId };
   }
 
   async validateJwt(id: number): Promise<User> {

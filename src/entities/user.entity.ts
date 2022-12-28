@@ -3,6 +3,8 @@ import { AuthProvider } from './types/auth-provider.enum';
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Article } from './article.entity';
 import { Tag } from './tag.entity';
+import { Report } from './report.entity';
+import { Blacklist } from './blacklist.entity';
 
 @Entity()
 export class User extends Common {
@@ -27,4 +29,10 @@ export class User extends Common {
 
   @OneToMany(() => Tag, (tag) => tag.user)
   tags: Tag[];
+
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
+
+  @OneToMany(() => Blacklist, (blacklist) => blacklist.user)
+  blacklists: Blacklist[];
 }
