@@ -6,13 +6,15 @@ import { AuthModule } from './auth/auth.module';
 import { mySqlOptions } from './ormconfig';
 import { ArticleModule } from './article/article.module';
 import { TagModule } from './tag/tag.module';
+import { BlacklistModule } from './blacklist/blacklist.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule,
     TypeOrmModule.forRoot(mySqlOptions),
+    AuthModule,
     ArticleModule,
+    BlacklistModule,
     TagModule,
   ],
   controllers: [AppController],
