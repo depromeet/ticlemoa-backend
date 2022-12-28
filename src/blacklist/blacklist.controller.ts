@@ -5,12 +5,14 @@ import { BlacklistService } from './blacklist.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
+import { Auth } from 'src/auth/decorator/auth.decorator';
 
 @ApiTags('Blacklist')
 @Controller('blacklist')
 export class BlacklistController {
   constructor(private readonly blacklistService: BlacklistService) {}
 
+  @Auth()
   @Post()
   async create(
     @UserRequest() { userId }: UserPayload,

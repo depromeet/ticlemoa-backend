@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
-import { JwtAuthGuard } from 'src/auth/utils/guards/jwt-auth.guard';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
 import { Article } from 'src/entities/article.entity';
@@ -15,7 +15,7 @@ import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-a
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
-  // @UseGuards(JwtAuthGuard)
+  @Auth()
   @Post()
   async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
     return await this.articleService.create(createArticleDto);
@@ -39,6 +39,7 @@ export class ArticleController {
     return { articles };
   }
 
+  @Auth()
   @Put(':articleId')
   async update(
     @Param('articleId', ParseIntPipe) id: number,
@@ -47,7 +48,7 @@ export class ArticleController {
     return this.articleService.update(updateArticleDto, id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Auth()
   @ApiParam({
     name: 'articleIds',
     description: '제거할 id들을 받아옵니다. bulk api일 경우 1,2,3,4 가 가능함',
