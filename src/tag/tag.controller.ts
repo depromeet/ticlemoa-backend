@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -54,7 +54,7 @@ export class TagController {
   @ApiOkResponse({ description: '태그 수정에 성공했습니다.', type: OneTagResponseDto })
   @ApiNotFoundResponse({ description: '요청에 맞는 태그가 존재하지 않습니다.' })
   @ApiParam({ name: 'tagId', description: '태그의 id를 사용하여 업데이트 합니다.', example: 1 })
-  async update(
+  async updateTag(
     @UserRequest() user: User,
     @Param('tagId', ParseIntPipe) tagId: number,
     @Body() updateTagRequestDto: UpdateTagRequestDto,
@@ -62,5 +62,11 @@ export class TagController {
     const tag = await this.tagService.updateTag(user.id, tagId, updateTagRequestDto);
 
     return TagDtoMapper.toResponseDto({ tag, user });
+  }
+
+  @Delete(':tagId')
+  @UseGuards(JwtAuthGuard)
+  async deleteTag(@UserRequest() user: User, @Param('tagId', ParseIntPipe) tagId: number): Promise<void> {
+    await this.tagService.deleteTag(user.id, tagId);
   }
 }

@@ -29,5 +29,14 @@ export class TagService {
     existedTag.tagName = tagName;
     return existedTag;
   }
+
+  async deleteTag(userId: number, tagId: number) {
+    const existedTag: Tag = await this.tagRepository.findOne({ where: { userId, id: tagId } });
+    if (!existedTag) {
+      throw new NotFoundException({
+        message: '요청한 태그가 존재하지 않습니다.',
+      });
+    }
+    await this.tagRepository.softDelete({ userId, id: tagId });
   }
 }
