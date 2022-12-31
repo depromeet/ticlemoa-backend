@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feat/be-student
+      - feat/aws
 env:
-  ECR_REGISTRY: 535730855881.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REGISTRY: 962800668635.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: ticlemoa
-  APPLICATION_NAME: ticlemoa
-  ENVIRONMENT_NAME: Ticlemoa-env
+  APPLICATION_NAME: ticlemoa-server
+  ENVIRONMENT_NAME: Ticlemoaserver-env
   AWS_REGION: ap-northeast-2
   GIT_SHA: ${{ github.sha }}
 
@@ -38,7 +38,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+          echo DB_HOST=${{ secrets.BE_STUDENT_DB_HOST }} >> .env
           echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
           echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
           echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
