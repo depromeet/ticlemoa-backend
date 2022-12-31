@@ -25,7 +25,7 @@ export class ArticleService {
       articleTag.tagId = tagId;
       return articleTag;
     });
-    await Promise.all(articleTags.map((articleTag) => this.articleTagRepository.save(articleTag)));
+    await this.articleTagRepository.save(articleTags);
     return saved;
   }
 
