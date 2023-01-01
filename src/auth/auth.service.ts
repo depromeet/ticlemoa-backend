@@ -172,7 +172,7 @@ export class AuthService {
     );
   }
 
-  setCurrentRefreshToken(userId: number, refreshToken: string) {
+  setCurrentRefreshToken(userId: number, refreshToken: string): void {
     this.userRepository.update(userId, { refreshToken: refreshToken });
   }
 
@@ -188,7 +188,7 @@ export class AuthService {
     }
   }
 
-  async checkRefreshToken(refreshToken: string) {
+  async checkRefreshToken(refreshToken: string): Promise<void> {
     try {
       const payload: JwtPayload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
@@ -200,8 +200,8 @@ export class AuthService {
       if (refreshToken !== userRefreshToken) {
         throw new UnauthorizedException('유효하지 않은 토큰입니다.');
       }
-    } catch (e) {
-      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+    } catch {
+      throw new BadRequestException('유효하지 않은 요청입니다.');
     }
   }
 }

@@ -7,6 +7,7 @@ import {
   ApiExcludeEndpoint,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
@@ -113,11 +114,14 @@ export class AuthController {
 
   @Post('refresh')
   @Auth()
+  @ApiCreatedResponse({ description: 'access token 재발급 성공', type: LoginResponseDto })
+  @ApiUnauthorizedResponse({ description: '유효하지 않은 refresh token으로 access token 재발급에 실패했습니다.' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
   async refresh(
     @UserRequest() { userId }: UserPayload,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<LoginResponseDto> {
     const prevRefreshToken = req.cookies['refresh_token'];
     const { accessToken, refreshToken } = await this.authService.rotateRefreshToken(userId, prevRefreshToken);
     res.cookie('refresh_token', refreshToken, {
