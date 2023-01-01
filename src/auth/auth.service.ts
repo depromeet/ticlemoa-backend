@@ -197,7 +197,7 @@ export class AuthService {
       select: { refreshToken: true },
     });
     if (refreshToken !== userRefreshToken) {
-      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+      throw new UnauthorizedException();
     }
   }
 }
