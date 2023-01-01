@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   ApiBadRequestResponse,
@@ -7,8 +7,9 @@ import {
   ApiExcludeEndpoint,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UserRequest } from '../common/decorators/user-request.decorator';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -17,6 +18,8 @@ import { AccessToken } from './types/token-response.interface';
 import { GoogleAuthGuard } from './utils/guards/google-auth.guard';
 import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
+import { UserPayload } from './types/jwt-payload.interface';
+import { Auth } from './decorator/auth.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -55,6 +58,7 @@ export class AuthController {
   deprecatedKakaoLogin(): string {
     return 'success';
   }
+
   @Get('kakao/redirect')
   @UseGuards(KakaoAuthGuard)
   @ApiExcludeEndpoint()
@@ -70,6 +74,7 @@ export class AuthController {
   deprecatedNaverLogin(): string {
     return 'success';
   }
+
   @Get('naver/redirect')
   @UseGuards(NaverAuthGuard)
   @ApiExcludeEndpoint()
@@ -99,10 +104,30 @@ export class AuthController {
   test(@Res({ passthrough: true }) res: Response) {
     const accessToken = this.authService.generateAccessToken(1);
     const refreshToken = this.authService.generateRefreshToken(1);
+    this.authService.setCurrentRefreshToken(1, refreshToken);
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
     });
     return { accessToken };
+  }
+
+  @Post('refresh')
+  @Auth()
+  @ApiCreatedResponse({ description: 'access token 재발급 성공', type: LoginResponseDto })
+  @ApiUnauthorizedResponse({ description: '유효하지 않은 refresh token으로 access token 재발급에 실패했습니다.' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
+  async refresh(
+    @UserRequest() { userId }: UserPayload,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<LoginResponseDto> {
+    const prevRefreshToken = req.cookies['refresh_token'];
+    const { accessToken, refreshToken } = await this.authService.rotateRefreshToken(userId, prevRefreshToken);
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
+    });
+    return { accessToken, userId };
   }
 }
