@@ -5,6 +5,7 @@ import { Article } from './article.entity';
 import { Tag } from './tag.entity';
 import { Report } from './report.entity';
 import { Blacklist } from './blacklist.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends Common {
@@ -23,6 +24,10 @@ export class User extends Common {
 
   @Column({ type: 'enum', enum: AuthProvider })
   provider!: AuthProvider;
+
+  @Exclude()
+  @Column({ type: 'varchar', length: 300, nullable: true })
+  refreshToken?: string;
 
   @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
