@@ -8,7 +8,7 @@ export class ArticleMapper {
     this.article.content = articleCreateDto.content;
     this.article.isPublic = articleCreateDto.isPublic;
     this.article.title = articleCreateDto.title;
-    this.article.link = articleCreateDto.url;
+    this.article.url = articleCreateDto.url;
     this.article.userId = articleCreateDto.userId;
     if (id) {
       this.article.id = id;
