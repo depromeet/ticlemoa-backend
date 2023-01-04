@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthProvider } from '../entities/types/auth-provider.enum';
 import { UserRepository } from '../user/repository/user.repository';
@@ -8,6 +8,7 @@ import { LoginRequestDto } from './dto/login-request.dto';
 import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
 import { User } from '../entities/user.entity';
+import { JwtPayload } from './types/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +48,8 @@ export class AuthService {
 
     const accessToken = this.generateAccessToken(userId);
     const refreshToken = this.generateRefreshToken(userId);
+
+    this.setCurrentRefreshToken(userId, refreshToken);
 
     return { accessToken, refreshToken, userId };
   }
@@ -167,5 +170,34 @@ export class AuthService {
         expiresIn: `${this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')}s`,
       },
     );
+  }
+
+  setCurrentRefreshToken(userId: number, refreshToken: string): void {
+    this.userRepository.update(userId, { refreshToken: refreshToken });
+  }
+
+  async rotateRefreshToken(userId: number, prevRefreshToken: string): Promise<TokenResponse> {
+    try {
+      await this.checkRefreshToken(prevRefreshToken);
+      const accessToken = this.generateAccessToken(userId);
+      const refreshToken = this.generateRefreshToken(userId);
+      this.setCurrentRefreshToken(userId, refreshToken);
+      return { accessToken, refreshToken, userId };
+    } catch {
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+    }
+  }
+
+  async checkRefreshToken(refreshToken: string): Promise<void> {
+    const payload: JwtPayload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+    });
+    const { refreshToken: userRefreshToken } = await this.userRepository.findOne({
+      where: { id: payload.id },
+      select: { refreshToken: true },
+    });
+    if (refreshToken !== userRefreshToken) {
+      throw new UnauthorizedException();
+    }
   }
 }

@@ -7,7 +7,7 @@ import { Report } from './report.entity';
 @Entity()
 export class Article extends Common {
   @Column()
-  link: string;
+  url: string;
 
   @Column({ nullable: true })
   title?: string;

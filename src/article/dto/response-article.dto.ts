@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OneArticleResponseDto {
-  link: string;
+  url: string;
   @ApiProperty({ nullable: true })
   title?: string;
   @ApiProperty({ nullable: true })
