@@ -208,4 +208,43 @@ export class AuthService {
       throw new BadRequestException();
     }
   }
+
+  async withdraw(userId: number, accessToken: string) {
+    try {
+      const { provider } = await this.userRepository.findOne({ where: { id: userId } });
+      let url: string,
+        method = 'GET';
+      switch (provider) {
+        case AuthProvider.KAKAO: {
+          url = 'https://kapi.kakao.com/v1/user/unlink';
+          break;
+        }
+        case AuthProvider.NAVER: {
+          url = `https://nid.naver.com/oauth2.0/token?grant_type=delete&client_id=${this.configService.get(
+            'NAVER_CLIENT_ID',
+          )}&client_secret=${this.configService.get(
+            'NAVER_SECRET',
+          )}&access_token=${accessToken}&service_provider=NAVER`;
+          break;
+        }
+        case AuthProvider.GOOGLE: {
+          url = `https://oauth2.googleapis.com/revoke?token=${accessToken}`;
+          method = 'POST';
+          break;
+        }
+        default: {
+          throw new BadRequestException();
+        }
+      }
+      const result = await axios({
+        url,
+        method,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      await this.userRepository.softDelete(userId);
+      return result;
+    } catch {
+      throw new BadRequestException('유효하지 않은 OAuth 요청입니다.');
+    }
+  }
 }

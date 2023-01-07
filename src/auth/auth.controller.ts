@@ -20,6 +20,7 @@ import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 import { UserPayload } from './types/jwt-payload.interface';
 import { Auth } from './decorator/auth.decorator';
+import { WithdrawRequestDto } from './dto/withdraw-request.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -141,6 +142,20 @@ export class AuthController {
   @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
   async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
     await this.authService.deleteRefreshToken(userId);
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
+    });
+  }
+
+  @Post('withdraw')
+  @Auth()
+  async withdraw(
+    @Body() withdrawRequestDto: WithdrawRequestDto,
+    @UserRequest() { userId }: UserPayload,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.authService.withdraw(userId, withdrawRequestDto.accessToken);
     res.clearCookie('refresh_token', {
       httpOnly: true,
       maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
