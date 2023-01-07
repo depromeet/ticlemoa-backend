@@ -143,10 +143,7 @@ export class AuthController {
   @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
   async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
     await this.authService.deleteRefreshToken(userId);
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
-    });
+    res.clearCookie('refresh_token');
   }
 
   @Post('withdraw')
@@ -165,9 +162,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     await this.authService.withdraw(userId, withdrawRequestDto.accessToken);
-    res.clearCookie('refresh_token', {
-      httpOnly: true,
-      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
-    });
+    res.clearCookie('refresh_token');
   }
 }
