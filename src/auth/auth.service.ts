@@ -21,16 +21,16 @@ export class AuthService {
   async login(data: LoginRequestDto): Promise<TokenResponse> {
     let userId: number;
     try {
-      switch (data.vendor) {
-        case 'kakao': {
+      switch (data.provider) {
+        case AuthProvider.KAKAO: {
           userId = await this.getUserByKakaoAccessToken(data.accessToken);
           break;
         }
-        case 'naver': {
+        case AuthProvider.NAVER: {
           userId = await this.getUserByNaverAccessToken(data.accessToken);
           break;
         }
-        case 'google': {
+        case AuthProvider.GOOGLE: {
           userId = await this.getUserByGoogleAccessToken(data.accessToken);
           break;
         }
