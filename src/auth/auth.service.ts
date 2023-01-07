@@ -201,7 +201,7 @@ export class AuthService {
     }
   }
 
-  async deleteRefreshToken(userId: number) {
+  async deleteRefreshToken(userId: number): Promise<void> {
     try {
       await this.userRepository.update(userId, { refreshToken: null });
     } catch {
@@ -209,7 +209,7 @@ export class AuthService {
     }
   }
 
-  async withdraw(userId: number, accessToken: string) {
+  async withdraw(userId: number, accessToken: string): Promise<void> {
     try {
       const { provider } = await this.userRepository.findOne({ where: { id: userId } });
       let url: string,
@@ -236,13 +236,12 @@ export class AuthService {
           throw new BadRequestException();
         }
       }
-      const result = await axios({
+      await axios({
         url,
         method,
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       await this.userRepository.softDelete(userId);
-      return result;
     } catch {
       throw new BadRequestException('유효하지 않은 OAuth 요청입니다.');
     }
