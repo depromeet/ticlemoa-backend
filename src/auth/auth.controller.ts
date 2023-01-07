@@ -34,7 +34,7 @@ export class AuthController {
     description: 'OAuth 액세스 토큰(AccessToken) 및 제공자(vendor)',
     type: LoginRequestDto,
     examples: {
-      loginRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)', vendor: 'KAKAO|GOOGLE|NAVER|APPLE' } },
+      loginRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)', provider: 'KAKAO|GOOGLE|NAVER|APPLE' } },
     },
   })
   @ApiCreatedResponse({ description: '로그인/회원가입 성공', type: LoginResponseDto })
