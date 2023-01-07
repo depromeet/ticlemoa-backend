@@ -130,4 +130,13 @@ export class AuthController {
     });
     return { accessToken, userId };
   }
+  @Post('logout')
+  @Auth()
+  async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
+    await this.authService.deleteRefreshToken(userId);
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
+    });
+  }
 }

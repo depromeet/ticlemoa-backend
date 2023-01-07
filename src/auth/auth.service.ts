@@ -200,4 +200,12 @@ export class AuthService {
       throw new UnauthorizedException();
     }
   }
+
+  async deleteRefreshToken(userId: number) {
+    try {
+      await this.userRepository.update(userId, { refreshToken: null });
+    } catch {
+      throw new BadRequestException();
+    }
+  }
 }
