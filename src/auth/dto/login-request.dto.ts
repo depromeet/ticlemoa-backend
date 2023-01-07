@@ -1,11 +1,12 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { AuthProvider } from '../../entities/types/auth-provider.enum';
 
 export class LoginRequestDto {
   @IsString()
   @IsNotEmpty()
   accessToken!: string;
 
-  @IsString()
+  @IsEnum(AuthProvider)
   @IsNotEmpty()
-  vendor!: string;
+  provider!: string;
 }
