@@ -8,9 +8,17 @@ export class Report extends Common {
   @Column({ type: 'varchar', length: 400 })
   content!: string;
 
+  @Column()
+  @Index()
+  userId!: number;
+
   @ManyToOne(() => User, (user) => user.reports)
   @JoinColumn()
   user: User;
+
+  @Column()
+  @Index()
+  articleId!: number;
 
   @ManyToOne(() => Article, (article) => article.reports)
   @JoinColumn()
