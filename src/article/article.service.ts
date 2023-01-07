@@ -46,8 +46,7 @@ export class ArticleService {
       .createQueryBuilder('article')
       .where('article.title LIKE :search', { search })
       .where('article.content LIKE :search', { search })
-      .execute();
-
+      .getMany();
     return articles.filter((article) => !blacklistIds.includes(article.userId));
   }
 
