@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiCreatedResponse,
   ApiExcludeEndpoint,
+  ApiNoContentResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -20,6 +21,7 @@ import { KakaoAuthGuard } from './utils/guards/kakao-auth.guard';
 import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 import { UserPayload } from './types/jwt-payload.interface';
 import { Auth } from './decorator/auth.decorator';
+import { WithdrawRequestDto } from './dto/withdraw-request.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -32,7 +34,7 @@ export class AuthController {
     description: 'OAuth 액세스 토큰(AccessToken) 및 제공자(vendor)',
     type: LoginRequestDto,
     examples: {
-      loginRequestDto: { value: { accessToken: 'yg1wdaf(해시 문자열)', vendor: 'kakao|google|naver|apple' } },
+      loginRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)', vendor: 'KAKAO|GOOGLE|NAVER|APPLE' } },
     },
   })
   @ApiCreatedResponse({ description: '로그인/회원가입 성공', type: LoginResponseDto })
@@ -114,6 +116,9 @@ export class AuthController {
 
   @Post('refresh')
   @Auth()
+  @ApiOperation({
+    description: 'refesh 토큰을 사용하여 access 토큰을 재발급합니다. RTR로 refresh 토큰도 재발급합니다,',
+  })
   @ApiCreatedResponse({ description: 'access token 재발급 성공', type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: '유효하지 않은 refresh token으로 access token 재발급에 실패했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
@@ -129,5 +134,36 @@ export class AuthController {
       maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
     });
     return { accessToken, userId };
+  }
+
+  @Post('logout')
+  @HttpCode(204)
+  @Auth()
+  @ApiOperation({ description: 'refresh_token 쿠키를 삭제하고, 유저 테이블에 있는 refresh 토큰을 null로 수정합니다.' })
+  @ApiNoContentResponse({ description: '로그아웃에 성공했습니다.' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
+  async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
+    await this.authService.deleteRefreshToken(userId);
+    res.clearCookie('refresh_token');
+  }
+
+  @Post('withdraw')
+  @HttpCode(204)
+  @Auth()
+  @ApiBody({
+    description: 'OAuth 액세스 토큰',
+    type: WithdrawRequestDto,
+    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
+  })
+  @ApiOperation({ description: '회원탈퇴' })
+  @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
+  async withdraw(
+    @Body() withdrawRequestDto: WithdrawRequestDto,
+    @UserRequest() { userId }: UserPayload,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    await this.authService.withdraw(userId, withdrawRequestDto.accessToken);
+    res.clearCookie('refresh_token');
   }
 }
