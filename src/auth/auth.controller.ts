@@ -5,6 +5,7 @@ import {
   ApiBody,
   ApiCreatedResponse,
   ApiExcludeEndpoint,
+  ApiNoContentResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -150,6 +151,9 @@ export class AuthController {
 
   @Post('withdraw')
   @Auth()
+  @ApiOperation({ description: '회원탈퇴' })
+  @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })
+  @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
   async withdraw(
     @Body() withdrawRequestDto: WithdrawRequestDto,
     @UserRequest() { userId }: UserPayload,
