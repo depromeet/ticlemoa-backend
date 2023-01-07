@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   ApiBadRequestResponse,
@@ -137,6 +137,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @HttpCode(204)
   @Auth()
   @ApiOperation({ description: 'refresh_token 쿠키를 삭제하고, 유저 테이블에 있는 refresh 토큰을 null로 수정합니다.' })
   @ApiNoContentResponse({ description: '로그아웃에 성공했습니다.' })
@@ -147,6 +148,7 @@ export class AuthController {
   }
 
   @Post('withdraw')
+  @HttpCode(204)
   @Auth()
   @ApiBody({
     description: 'OAuth 액세스 토큰',
