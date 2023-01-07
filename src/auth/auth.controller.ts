@@ -34,7 +34,7 @@ export class AuthController {
     description: 'OAuth 액세스 토큰(AccessToken) 및 제공자(vendor)',
     type: LoginRequestDto,
     examples: {
-      loginRequestDto: { value: { accessToken: 'yg1wdaf(해시 문자열)', vendor: 'kakao|google|naver|apple' } },
+      loginRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)', vendor: 'KAKAO|GOOGLE|NAVER|APPLE' } },
     },
   })
   @ApiCreatedResponse({ description: '로그인/회원가입 성공', type: LoginResponseDto })
@@ -151,6 +151,11 @@ export class AuthController {
 
   @Post('withdraw')
   @Auth()
+  @ApiBody({
+    description: 'OAuth 액세스 토큰',
+    type: WithdrawRequestDto,
+    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
+  })
   @ApiOperation({ description: '회원탈퇴' })
   @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
