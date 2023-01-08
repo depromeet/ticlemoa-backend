@@ -42,7 +42,7 @@ export class ArticleService {
   async search(userId: number, search: string): Promise<Article[]> {
     const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
     const blacklistIds: number[] = blacklists.map((it) => it.targetId);
-    const articles: Article[] = await this.articleRepository.findByContent(search);
+    const articles: Article[] = await this.articleRepository.search(search);
     return articles.filter((article) => !blacklistIds.includes(article.userId));
   }
 
