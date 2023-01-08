@@ -143,13 +143,8 @@ export class AuthController {
   @ApiOperation({ description: 'refresh_token 쿠키를 삭제하고, 유저 테이블에 있는 refresh 토큰을 null로 수정합니다.' })
   @ApiNoContentResponse({ description: '로그아웃에 성공했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
-  async logout(
-    @UserRequest() { userId }: UserPayload,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<void> {
-    const refreshToken = req.cookies['refresh_token'];
-    await this.authService.deleteRefreshToken(userId, refreshToken);
+  async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
+    await this.authService.deleteRefreshToken(userId);
     res.clearCookie('refresh_token');
   }
 
