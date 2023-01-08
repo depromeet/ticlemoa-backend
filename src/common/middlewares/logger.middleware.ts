@@ -14,10 +14,10 @@ export class LoggerMiddleware implements NestMiddleware {
       const body = JSON.stringify(request.body);
       const authorization = request.headers['authorization'];
       const xForwardedFor = request.headers['x-forwarded-for'];
-      if (userAgent.includes('ELB-HealthChecker')) {
+      if (userAgent?.includes('ELB-HealthChecker')) {
         return;
       }
-      if (xForwardedFor.includes('54.180.108.247')) {
+      if (xForwardedFor?.includes('54.180.108.247')) {
         return;
       }
       this.logger.log(
