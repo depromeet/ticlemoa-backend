@@ -115,9 +115,8 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @Auth()
   @ApiOperation({
-    description: 'refesh 토큰을 사용하여 access 토큰을 재발급합니다. RTR로 refresh 토큰도 재발급합니다,',
+    description: 'refresh 토큰을 사용하여 access 토큰을 재발급합니다. RTR로 refresh 토큰도 재발급합니다,',
   })
   @ApiCreatedResponse({ description: 'access token 재발급 성공', type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: '유효하지 않은 refresh token으로 access token 재발급에 실패했습니다.' })
@@ -142,8 +141,13 @@ export class AuthController {
   @ApiOperation({ description: 'refresh_token 쿠키를 삭제하고, 유저 테이블에 있는 refresh 토큰을 null로 수정합니다.' })
   @ApiNoContentResponse({ description: '로그아웃에 성공했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 요청입니다.' })
-  async logout(@UserRequest() { userId }: UserPayload, @Res({ passthrough: true }) res: Response): Promise<void> {
-    await this.authService.deleteRefreshToken(userId);
+  async logout(
+    @UserRequest() { userId }: UserPayload,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
+    const refreshToken = req.cookies['refresh_token'];
+    await this.authService.deleteRefreshToken(userId, refreshToken);
     res.clearCookie('refresh_token');
   }
 
