@@ -42,11 +42,7 @@ export class ArticleService {
   async search(userId: number, search: string): Promise<Article[]> {
     const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
     const blacklistIds: number[] = blacklists.map((it) => it.targetId);
-    const articles: Article[] = await this.articleRepository
-      .createQueryBuilder('article')
-      .where('article.title LIKE :search', { search })
-      .where('article.content LIKE :search', { search })
-      .getMany();
+    const articles: Article[] = await this.articleRepository.findByContent(search);
     return articles.filter((article) => !blacklistIds.includes(article.userId));
   }
 
