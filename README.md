@@ -1,4 +1,4 @@
 # ticlemoa-backend
 
 # 아키텍처
-![image](https://user-images.githubusercontent.com/80899085/210204487-667bdbb0-85c7-48c4-922a-b2a655131157.png)
+![image](https://user-images.githubusercontent.com/80899085/211158112-59b099cc-f6f3-4484-9d78-9463ca13709e.png)
