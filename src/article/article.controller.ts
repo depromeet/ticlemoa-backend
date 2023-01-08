@@ -29,11 +29,11 @@ export class ArticleController {
     description: '검색을 위한 검색어를 담고 있습니다',
     example: '뇽뇽',
   })
-  async findAll(
+  async search(
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: Article[] = await this.articleService.findAll(userId, search);
+    const articles: Article[] = await this.articleService.search(userId, search);
     return { articles };
   }
 
