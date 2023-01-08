@@ -9,6 +9,7 @@ import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
 import { User } from '../entities/user.entity';
 import { JwtPayload } from './types/jwt-payload.interface';
+import { JsonWebTokenError } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -201,10 +202,14 @@ export class AuthService {
     }
   }
 
-  async deleteRefreshToken(userId: number): Promise<void> {
+  async deleteRefreshToken(userId: number, refreshToken: string): Promise<void> {
     try {
+      await this.checkRefreshToken(refreshToken);
       await this.userRepository.update(userId, { refreshToken: null });
-    } catch {
+    } catch (err) {
+      if (err instanceof JsonWebTokenError) {
+        throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+      }
       throw new BadRequestException();
     }
   }
