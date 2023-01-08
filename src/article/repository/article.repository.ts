@@ -8,7 +8,7 @@ export class ArticleRepository extends Repository<Article> {
     super(Article, dataSource.createEntityManager(), dataSource.createQueryRunner());
   }
 
-  async search(search: string) {
+  async search(search: string): Promise<Article[]> {
     return await this.createQueryBuilder('article')
       .where('article.title LIKE :search', { search })
       .where('article.content LIKE :search', { search })
