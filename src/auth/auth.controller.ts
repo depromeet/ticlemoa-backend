@@ -52,6 +52,26 @@ export class AuthController {
     return { accessToken, userId };
   }
 
+  @Post('free')
+  async freelogin(@Res({ passthrough: true }) res: Response) {
+    const { accessToken, refreshToken, userId } = await this.authService.freelogin();
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      maxAge: +this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME') * 1000,
+    });
+    return { accessToken, userId };
+  }
+
+  @Post('apple')
+  @ApiOperation({
+    summary: '애플 서버 통신 api',
+    description: '애플에서 중요한 정보 혹은 업데이트를 위해 요구하는 endpoint입니다.',
+  })
+  contactApple() {
+    return 'ok';
+  }
+
   // 정식 배포 전까지 액세스 토큰을 원활하게 탐색하기 위해 남겨놓았습니다.
   @Get('kakao')
   @UseGuards(KakaoAuthGuard)
@@ -153,7 +173,7 @@ export class AuthController {
   @ApiBody({
     description: 'OAuth 액세스 토큰',
     type: WithdrawRequestDto,
-    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
+    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(Ticlemoa Access Token)' } } },
   })
   @ApiOperation({ description: '회원탈퇴' })
   @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })

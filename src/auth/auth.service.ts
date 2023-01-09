@@ -9,6 +9,8 @@ import axios from 'axios';
 import { TokenResponse } from './types/token-response.interface';
 import { User } from '../entities/user.entity';
 import { JwtPayload } from './types/jwt-payload.interface';
+import * as jwksClient from 'jwks-rsa';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +34,10 @@ export class AuthService {
         }
         case AuthProvider.GOOGLE: {
           userId = await this.getUserByGoogleAccessToken(data.accessToken);
+          break;
+        }
+        case AuthProvider.APPLE: {
+          userId = await this.getUserByAppleIdentifyToken(data.accessToken);
           break;
         }
         default: {
@@ -74,7 +80,9 @@ export class AuthService {
     const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
-      const { nickname, profile_image: avatarUrl } = kakaoData.properties;
+      const randomNicknameReq = await axios.get('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=6');
+      const nickname = randomNicknameReq.data.words[0];
+      const { profile_image: avatarUrl } = kakaoData.properties;
       const kakaoAccount = kakaoData.kakao_account;
       const email = kakaoAccount.has_email && !kakaoAccount.email_needs_agreement ? kakaoAccount.email : null;
       const { id } = await this.userRepository.save({
@@ -106,7 +114,9 @@ export class AuthService {
     const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
-      const { nickname, profile_image: avatarUrl, email } = naverResponse;
+      const randomNicknameReq = await axios.get('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=6');
+      const nickname = randomNicknameReq.data.words[0];
+      const { profile_image: avatarUrl, email } = naverResponse;
       const { id } = await this.userRepository.save({
         snsId,
         email,
@@ -136,7 +146,9 @@ export class AuthService {
     const existedUser = await this.userRepository.findOne({ where: { snsId } });
 
     if (!existedUser) {
-      const { name: nickname, picture: avatarUrl, email } = googleData;
+      const randomNicknameReq = await axios.get('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=6');
+      const nickname = randomNicknameReq.data.words[0];
+      const { picture: avatarUrl, email } = googleData;
       const { id } = await this.userRepository.save({
         snsId,
         email,
@@ -148,6 +160,73 @@ export class AuthService {
     }
 
     return existedUser.id;
+  }
+
+  async getAppleSigningKey(kid: string) {
+    // Public key 생성을 위해 요청 전송
+    const client = jwksClient({
+      jwksUri: 'https://appleid.apple.com/auth/keys',
+    });
+
+    const key = await client.getSigningKey(kid);
+
+    return key.getPublicKey();
+  }
+
+  async getUserByAppleIdentifyToken(identifyToken: string) {
+    try {
+      // App에서 전달받은 identify token의 header 파싱
+      const json = this.jwtService.decode(identifyToken, { complete: true });
+      const kid = json['header'].kid;
+      const appleKey = await this.getAppleSigningKey(kid);
+
+      if (!appleKey) {
+        throw new BadRequestException();
+      }
+      const { sub: snsId, email } = this.jwtService.verify(identifyToken, {
+        algorithms: ['RS256'],
+        secret: appleKey,
+      });
+      const existedUser = await this.userRepository.findOne({ where: { snsId } });
+
+      if (!existedUser) {
+        const randomNicknameReq = await axios.get('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=6');
+        const nickname = randomNicknameReq.data.words[0];
+        const { id } = await this.userRepository.save({
+          snsId,
+          email,
+          nickname,
+          provider: AuthProvider.APPLE,
+        });
+        return id;
+      }
+
+      return existedUser.id;
+    } catch {
+      throw new BadRequestException();
+    }
+  }
+
+  async freelogin() {
+    try {
+      const randomNicknameReq = await axios.get('https://nickname.hwanmoo.kr/?format=json&count=1&max_length=6');
+      const nickname = randomNicknameReq.data.words[0];
+
+      const { id: userId } = await this.userRepository.save({
+        snsId: uuidv4(),
+        nickname,
+        provider: AuthProvider.NYONG,
+      });
+
+      const accessToken = this.generateAccessToken(userId);
+      const refreshToken = this.generateRefreshToken(userId);
+
+      this.setCurrentRefreshToken(userId, refreshToken);
+
+      return { accessToken, refreshToken, userId };
+    } catch {
+      throw new BadRequestException();
+    }
   }
 
   generateAccessToken(userId: number): string {
@@ -231,6 +310,10 @@ export class AuthService {
           url = `https://oauth2.googleapis.com/revoke?token=${accessToken}`;
           method = 'POST';
           break;
+        }
+        case AuthProvider.NYONG: {
+          await this.userRepository.softDelete(userId);
+          return;
         }
         default: {
           throw new BadRequestException();
