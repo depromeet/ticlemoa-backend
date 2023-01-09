@@ -3,6 +3,7 @@ export const AuthProvider = {
   GOOGLE: 'GOOGLE',
   NAVER: 'NAVER',
   APPLE: 'APPLE',
+  NYONG: 'NYONG',
 } as const;
 
 export type AuthProvider = typeof AuthProvider[keyof typeof AuthProvider];
