@@ -170,11 +170,11 @@ export class AuthController {
   @Post('withdraw')
   @HttpCode(204)
   @Auth()
-  @ApiBody({
-    description: 'OAuth 액세스 토큰',
-    type: WithdrawRequestDto,
-    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
-  })
+  // @ApiBody({
+  //   description: 'OAuth 액세스 토큰',
+  //   type: WithdrawRequestDto,
+  //   examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
+  // })
   @ApiOperation({ description: '회원탈퇴' })
   @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
