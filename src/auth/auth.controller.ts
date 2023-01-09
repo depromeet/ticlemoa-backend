@@ -179,7 +179,6 @@ export class AuthController {
   @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
   async withdraw(
     @Body() withdrawRequestDto: WithdrawRequestDto,
-    // @UserRequest() { userId }: UserPayload,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     // TODO 향후에 액세스토큰 해결 하면 고도화 할 예정
