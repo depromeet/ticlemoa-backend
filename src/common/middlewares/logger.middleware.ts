@@ -21,7 +21,7 @@ export class LoggerMiddleware implements NestMiddleware {
         return;
       }
       this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${xForwardedFor} ${userAgent}           ${body}             ${authorization}`,
+        `${method} ${originalUrl} ${statusCode} ${xForwardedFor} ${userAgent}\n${body}\n${authorization}`,
       );
     });
 
