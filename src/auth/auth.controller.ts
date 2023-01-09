@@ -169,23 +169,22 @@ export class AuthController {
 
   @Post('withdraw')
   @HttpCode(204)
-  @Auth()
-  // @ApiBody({
-  //   description: 'OAuth 액세스 토큰',
-  //   type: WithdrawRequestDto,
-  //   examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(OAuth Access Token)' } } },
-  // })
+  @ApiBody({
+    description: 'OAuth 액세스 토큰',
+    type: WithdrawRequestDto,
+    examples: { withdrawRequestDto: { value: { accessToken: 'yg1wdaf(Ticlmoa Access Token)' } } },
+  })
   @ApiOperation({ description: '회원탈퇴' })
   @ApiNoContentResponse({ description: '회원탈퇴에 성공했습니다.' })
   @ApiBadRequestResponse({ description: '유효하지 않은 OAuth 요청입니다.' })
   async withdraw(
-    // @Body() withdrawRequestDto: WithdrawRequestDto,
-    @UserRequest() { userId }: UserPayload,
+    @Body() withdrawRequestDto: WithdrawRequestDto,
+    // @UserRequest() { userId }: UserPayload,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
     // TODO 향후에 액세스토큰 해결 하면 고도화 할 예정
     // await this.authService.withdraw(userId, withdrawRequestDto.accessToken);
-    await this.authService.withdraw(userId);
+    await this.authService.withdraw(withdrawRequestDto.accessToken);
     res.clearCookie('refresh_token');
   }
 }
