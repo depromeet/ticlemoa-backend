@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Article } from 'src/entities/article.entity';
 
 export class OneArticleResponseDto {
+  id: number;
   url: string;
   @ApiProperty({ nullable: true })
   title?: string;
@@ -15,6 +16,7 @@ export class OneArticleResponseDto {
 }
 
 export class ArticleResponseDto {
+  private id: number;
   private url: string;
   @ApiProperty({ nullable: true })
   private title?: string;
@@ -27,6 +29,7 @@ export class ArticleResponseDto {
   private imageUrl?: string;
   private tagIds: number[];
   constructor(article: Article) {
+    this.id = article.id;
     this.url = article.url;
     this.title = article.title;
     this.content = article.content;
