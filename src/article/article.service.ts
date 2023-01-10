@@ -58,7 +58,6 @@ export class ArticleService {
 
   async findByUser(userId: number, tagId?: string): Promise<ArticleResponseDto[]> {
     const articles: Article[] = await this.articleRepository.findByUserIdAndTag(userId, tagId);
-    console.log(articles);
     return articles?.map((article) => new ArticleResponseDto(article));
   }
 }
