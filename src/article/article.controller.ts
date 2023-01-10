@@ -37,9 +37,16 @@ export class ArticleController {
     return { articles };
   }
 
+  @ApiQuery({
+    name: 'tagId',
+    required: false,
+  })
   @Get(':userId')
-  async findByUser(@Param('userId', ParseIntPipe) userId: number): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId);
+  async findByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query('tagId') tagId?: string,
+  ): Promise<ManyArticlesResponseDto> {
+    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, tagId);
     return { articles };
   }
 
