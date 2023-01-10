@@ -8,7 +8,7 @@ import { Article } from 'src/entities/article.entity';
 import { DeleteResult } from 'typeorm';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { ManyArticlesResponseDto, ArticleResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
 
 @ApiTags('Article')
 @Controller('article')
@@ -33,13 +33,13 @@ export class ArticleController {
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: Article[] = await this.articleService.findAll(userId, search);
+    const articles: ArticleResponseDto[] = await this.articleService.findAll(userId, search);
     return { articles };
   }
 
   @Get(':userId')
   async findByUser(@Param('userId', ParseIntPipe) userId: number): Promise<ManyArticlesResponseDto> {
-    const articles: Article[] = await this.articleService.findByUser(userId);
+    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId);
     return { articles };
   }
 
