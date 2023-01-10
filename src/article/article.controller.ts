@@ -33,7 +33,7 @@ export class ArticleController {
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findAll(userId, search);
+    const articles: ArticleResponseDto[] = await this.articleService.findAll(userId, decodeURIComponent(search));
     return { articles };
   }
 
