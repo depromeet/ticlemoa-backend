@@ -16,8 +16,8 @@ export class User extends Common {
   @Column({ type: 'varchar', length: 100, nullable: true })
   email?: string | null;
 
-  @Column({ type: 'varchar', length: 100 })
-  nickname!: string;
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  nickname?: string | null;
 
   @Column({ type: 'varchar', nullable: true })
   avatarUrl?: string | null;
