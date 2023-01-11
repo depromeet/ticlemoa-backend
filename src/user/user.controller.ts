@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
@@ -25,13 +25,5 @@ export class UserController {
   @ApiOkResponse({ description: '유저 정보', type: ResponseUserDto })
   async findOneById(@Param('id', ParseIntPipe) id: number): Promise<ResponseUserDto | never> {
     return this.userService.findOneByIdOrFail(id);
-  }
-
-  @Delete()
-  @Auth()
-  @ApiOperation({ summary: '유저 탈퇴' })
-  @ApiOkResponse({ description: '탈퇴 성공' })
-  async delete(@UserRequest() { userId }: UserPayload): Promise<void> {
-    await this.userService.delete(userId);
   }
 }
