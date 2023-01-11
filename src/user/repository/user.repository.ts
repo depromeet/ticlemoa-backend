@@ -15,7 +15,6 @@ export class UserRepository extends Repository<User> {
       throw new Error('User not found');
     }
     user.nickname = updateUserDto.nickname;
-    user.avatarUrl = updateUserDto.avatarUrl;
     return this.save(user);
   }
 }
