@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
@@ -37,24 +48,61 @@ export class ArticleController {
     description: '검색을 위한 검색어를 담고 있습니다',
     example: '뇽뇽',
   })
+  @ApiQuery({
+    name: 'isPublic',
+    required: false,
+    description: '아무것도 주어지지 않는다면 전체를 검색합니다',
+    example: 'true',
+  })
   async findAll(
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
+    @Query('isPublic') isPublic: string,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findAll(userId, decodeURIComponent(search));
+    isPublic = this.validateQuery(isPublic);
+    const articles: ArticleResponseDto[] = await this.articleService.findAll(
+      userId,
+      isPublic,
+      decodeURIComponent(search),
+    );
     return { articles };
+  }
+
+  private validateQuery(isPublic?: string) {
+    switch (isPublic) {
+      case undefined:
+        isPublic = 'all';
+        break;
+      case 'true':
+        isPublic = 'true';
+        break;
+      case 'false':
+        isPublic = 'false';
+        break;
+      default:
+        throw new BadRequestException('잘못된 값이 들어왔습니다');
+    }
+    return isPublic;
   }
 
   @ApiQuery({
     name: 'tagId',
     required: false,
   })
+  @ApiQuery({
+    name: 'isPublic',
+    required: false,
+    description: '아무것도 주어지지 않는다면 전체를 검색합니다',
+    example: 'true',
+  })
   @Get(':userId')
   async findByUser(
     @Param('userId', ParseIntPipe) userId: number,
+    @Query('isPublic') isPublic?: string,
     @Query('tagId') tagId?: string,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, tagId);
+    isPublic = this.validateQuery(isPublic);
+    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, isPublic, tagId);
     return { articles };
   }
 

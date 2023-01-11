@@ -8,10 +8,20 @@ export class ArticleRepository extends Repository<Article> {
     super(Article, dataSource.createEntityManager(), dataSource.createQueryRunner());
   }
 
-  async findByUserIdAndTag(userId: number, tagId?: string): Promise<Article[]> {
+  async findByUserIdAndTag(userId: number, isPublic: string, tagId?: string): Promise<Article[]> {
     const queryBuilder = this.createQueryBuilder('article')
       .leftJoinAndSelect('article.articleTags', 'articleTags')
       .where('article.userId =:userId', { userId });
+    switch (isPublic) {
+      case 'all':
+        break;
+      case 'true':
+        queryBuilder.andWhere('article.isPublic =:isPublic', { isPublic: true });
+        break;
+      case 'false':
+        queryBuilder.andWhere('article.isPublic =:isPublic', { isPublic: false });
+        break;
+    }
     if (tagId !== undefined) {
       queryBuilder.andWhere('articleTags.tagId =:tagId', { tagId });
     }
