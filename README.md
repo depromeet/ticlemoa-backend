@@ -14,6 +14,10 @@
 # 🏗 시스템 아키텍쳐
 ![image](https://user-images.githubusercontent.com/80899085/211158112-59b099cc-f6f3-4484-9d78-9463ca13709e.png)
 
+# 🧩 ERD 다이어그램
+<img width="888" alt="image" src="https://user-images.githubusercontent.com/31057849/211810874-00c4a8ed-a15d-46be-b5fc-662746c7cea9.png">
+
+
 # 👥 팀원 소개
 
 |                                                           강시온                                                           |                                                           송은우                                                           |                                                          이성태                                                          |
