@@ -6,10 +6,10 @@ on:
     branches:
       - feat/aws
 env:
-  ECR_REGISTRY: 962800668635.dkr.ecr.ap-northeast-2.amazonaws.com
-  ECR_REPOSITORY: ticlemoa
-  APPLICATION_NAME: ticlemoa-server
-  ENVIRONMENT_NAME: Ticlemoaserver-env
+  ECR_REGISTRY: 012535859612.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: nyongnyong-ecr
+  APPLICATION_NAME: nyongnyong
+  ENVIRONMENT_NAME: Nyongnyong-env
   AWS_REGION: ap-northeast-2
   GIT_SHA: ${{ github.sha }}
 
@@ -53,6 +53,7 @@ jobs:
           echo GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} >> .env
           echo NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} >> .env
           echo NAVER_SECRET=${{ secrets.NAVER_SECRET }} >> .env
+          echo OPEN_SEARCH_URL=${{ secrets.OPEN_SEARCH_URL }} >> .env
           cat .env
 
       - name: Build, tag, and push image to Amazon ECR
