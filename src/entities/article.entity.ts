@@ -10,6 +10,9 @@ export class Article extends Common {
   url: string;
 
   @Column({ nullable: true })
+  imageUrl?: string;
+
+  @Column({ nullable: true })
   title?: string;
 
   @Column({ nullable: true })

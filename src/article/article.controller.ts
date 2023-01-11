@@ -4,11 +4,13 @@ import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
 import { UserRequest } from 'src/common/decorators/user-request.decorator';
-import { Article } from 'src/entities/article.entity';
 import { DeleteResult } from 'typeorm';
 import { ArticleService } from './article.service';
+import { OgInfoMapper } from './domain/OgInfoMapper';
 import { CreateArticleDto } from './dto/create-article.dto';
-import { ManyArticlesResponseDto, ArticleResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { GetOgInfoDto } from './dto/get-oginfo.dto';
+import { ArticleResponseDto, ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { OgInfoResponseDto } from './dto/response-oginfo.dto';
 
 @ApiTags('Article')
 @Controller('article')
@@ -19,6 +21,12 @@ export class ArticleController {
   @Post()
   async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
     return await this.articleService.create(createArticleDto);
+  }
+
+  @Post('info')
+  async getOgInfo(@Body() getOgInfoDto: GetOgInfoDto): Promise<OgInfoResponseDto> {
+    const ogInfo = await this.articleService.getOgInfo(getOgInfoDto);
+    return OgInfoMapper.toResponseDto(ogInfo);
   }
 
   @Get()
