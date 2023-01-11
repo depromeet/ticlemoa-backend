@@ -1,32 +1,46 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsObject, IsString } from 'class-validator';
 
+class OgImage {
+  @ApiProperty({ nullable: true })
+  url: string;
+
+  @ApiProperty({ nullable: true })
+  width: string;
+
+  @ApiProperty({ nullable: true })
+  height: string;
+
+  @ApiProperty({ nullable: true })
+  type: string;
+}
+
 export class OgInfoResponseDto {
-  @IsString()
+  @ApiProperty({ nullable: true })
   ogDescription: string;
 
-  @IsString()
+  @ApiProperty({ nullable: true })
   ogTitle: string;
 
-  @IsString()
+  @ApiProperty({ nullable: true })
   ogUrl: string;
 
-  @IsObject()
-  ogImage: object;
+  ogImage: OgImage;
 
-  @IsString()
+  @ApiProperty({ nullable: true })
   ogSiteName: string;
 
-  @IsDate()
+  @ApiProperty({ nullable: true })
   ogDate: Date;
 
-  @IsBoolean()
+  @ApiProperty({ nullable: true })
   success: boolean;
 
   constructor(property: {
     ogDescription: string;
     ogTitle: string;
     ogUrl: string;
-    ogImage: object;
+    ogImage: any;
     ogSiteName: string;
     ogDate: Date;
     success: boolean;
