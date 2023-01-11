@@ -10,6 +10,7 @@ export class ArticleMapper {
     this.article.title = articleCreateDto.title;
     this.article.url = articleCreateDto.url;
     this.article.userId = articleCreateDto.userId;
+    this.article.imageUrl = articleCreateDto.imageUrl;
     if (id) {
       this.article.id = id;
     }

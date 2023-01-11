@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { BlacklistRepository } from 'src/blacklist/repository/blacklist.repository';
 import { Article } from 'src/entities/article.entity';
 import { ArticleTag } from 'src/entities/articleTag.entity';
@@ -7,6 +7,8 @@ import { ArticleMapper } from './domain/ArticleMapper';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { ArticleRepository } from './repository/article.repository';
 import { ArticleTagRepository } from './repository/articleTag.repository';
+import * as ogs from 'open-graph-scraper';
+import { GetOgInfoDto } from './dto/get-oginfo.dto';
 
 @Injectable()
 export class ArticleService {
@@ -56,5 +58,15 @@ export class ArticleService {
         userId,
       },
     });
+  }
+
+  async getOgInfo({ url }: GetOgInfoDto): Promise<any> {
+    try {
+      const page = await ogs({ url, timeout: { request: 5000 } });
+      const ogJson = page.result;
+      return ogJson;
+    } catch {
+      throw new BadRequestException();
+    }
   }
 }

@@ -17,6 +17,10 @@ export class CreateArticleDto {
   @IsUrl()
   url: string;
 
+  @IsUrl()
+  @IsOptional()
+  imageUrl: string;
+
   @IsBoolean()
   isPublic: boolean;
 

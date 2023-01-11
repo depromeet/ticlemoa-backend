@@ -7,8 +7,11 @@ import { UserRequest } from 'src/common/decorators/user-request.decorator';
 import { Article } from 'src/entities/article.entity';
 import { DeleteResult } from 'typeorm';
 import { ArticleService } from './article.service';
+import { OgInfoMapper } from './domain/OgInfoMapper';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { GetOgInfoDto } from './dto/get-oginfo.dto';
 import { ManyArticlesResponseDto, OneArticleResponseDto } from './dto/response-article.dto';
+import { OgInfoResponseDto } from './dto/response-oginfo.dto';
 
 @ApiTags('Article')
 @Controller('article')
@@ -19,6 +22,12 @@ export class ArticleController {
   @Post()
   async create(@Body() createArticleDto: CreateArticleDto): Promise<OneArticleResponseDto> {
     return await this.articleService.create(createArticleDto);
+  }
+
+  @Post('info')
+  async getOgInfo(@Body() getOgInfoDto: GetOgInfoDto): Promise<OgInfoResponseDto> {
+    const ogInfo = await this.articleService.getOgInfo(getOgInfoDto);
+    return OgInfoMapper.toResponseDto(ogInfo);
   }
 
   @Get()
