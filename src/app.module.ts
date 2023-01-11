@@ -8,6 +8,7 @@ import { ArticleModule } from './article/article.module';
 import { TagModule } from './tag/tag.module';
 import { BlacklistModule } from './blacklist/blacklist.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
     ArticleModule,
     BlacklistModule,
     TagModule,
+    ReportModule,
   ],
   controllers: [AppController],
 })
