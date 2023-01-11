@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { UpdateUserDto } from '../dto/update-user.dto';
@@ -12,7 +12,7 @@ export class UserRepository extends Repository<User> {
   async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne({ where: { id: userId } });
     if (!user) {
-      throw new Error('User not found');
+      throw new BadRequestException('User not found');
     }
     user.nickname = updateUserDto.nickname;
     return this.save(user);
