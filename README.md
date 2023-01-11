@@ -1,8 +1,7 @@
 <div align="center">
+
+<img src="https://user-images.githubusercontent.com/31057849/211729765-97839bfa-72c0-4d48-99b4-9d854a415649.png" width="200" />
 <h1>Ticlemoa</br>아티클을 모아 지식을 태산처럼</h1>
-
-
-
 
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fdepromeet%2Fticlemoa-backend&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
