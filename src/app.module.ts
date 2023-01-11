@@ -8,6 +8,7 @@ import { ArticleModule } from './article/article.module';
 import { TagModule } from './tag/tag.module';
 import { BlacklistModule } from './blacklist/blacklist.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { ReportModule } from './report/report.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     ArticleModule,
     BlacklistModule,
     TagModule,
+    ReportModule,
     UserModule,
   ],
   controllers: [AppController],
