@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserRepository } from './repository/user.repository';
+import { User } from 'src/entities/user.entity';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './repository/user.repository';
 
 @Injectable()
 export class UserService {
@@ -10,14 +11,18 @@ export class UserService {
 
   async update(userId: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
     const user = await this.userRepository.updateUser(userId, updateUserDto);
-    return user;
+    return new ResponseUserDto(user);
   }
 
-  async findOneByIdOrFail(userId: number): Promise<ResponseUserDto | never> {
-    return await this.userRepository.findOneOrFail({ where: { id: userId } });
-  }
-
-  async delete(userId: number): Promise<void> {
-    await this.userRepository.softDelete(userId);
+  async findOneByIdOrFail(userId: number): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) {
+        throw new BadRequestException();
+      }
+      return user;
+    } catch {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
   }
 }
