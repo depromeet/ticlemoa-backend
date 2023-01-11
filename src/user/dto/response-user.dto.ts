@@ -1,12 +1,12 @@
-import { IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponseUserDto {
-  @IsString()
+  @ApiProperty({ nullable: true })
   email?: string;
 
-  @IsString()
+  @ApiProperty({ nullable: true })
   nickname?: string;
 
-  @IsString()
+  @ApiProperty({ nullable: true })
   avatarUrl?: string;
 }
