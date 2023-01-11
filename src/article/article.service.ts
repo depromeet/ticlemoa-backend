@@ -5,6 +5,7 @@ import { ArticleTag } from 'src/entities/articleTag.entity';
 import { DeleteResult } from 'typeorm';
 import { ArticleMapper } from './domain/ArticleMapper';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { ArticleResponseDto } from './dto/response-article.dto';
 import { ArticleRepository } from './repository/article.repository';
 import { ArticleTagRepository } from './repository/articleTag.repository';
 
@@ -39,22 +40,24 @@ export class ArticleService {
     return await this.articleRepository.softDelete(ids);
   }
 
-  async findAll(userId: number, search: string): Promise<Article[]> {
+  async findAll(userId: number, search: string): Promise<ArticleResponseDto[]> {
     const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
     const blacklistIds: number[] = blacklists.map((it) => it.targetId);
     const articles: Article[] = await this.articleRepository
       .createQueryBuilder('article')
+      .leftJoinAndSelect('article.articleTags', 'articleTags')
+      .leftJoinAndSelect('articleTags.tag', 'tag')
       .where('article.title LIKE :search', { search })
       .where('article.content LIKE :search', { search })
+      .where('tag.tagName LIKE :search', { search })
       .getMany();
-    return articles.filter((article) => !blacklistIds.includes(article.userId));
+    return articles
+      .filter((article) => !blacklistIds.includes(article.userId))
+      .map((article) => new ArticleResponseDto(article));
   }
 
-  async findByUser(userId: number): Promise<Article[]> {
-    return await this.articleRepository.find({
-      where: {
-        userId,
-      },
-    });
+  async findByUser(userId: number, tagId?: string): Promise<ArticleResponseDto[]> {
+    const articles: Article[] = await this.articleRepository.findByUserIdAndTag(userId, tagId);
+    return articles?.map((article) => new ArticleResponseDto(article));
   }
 }
