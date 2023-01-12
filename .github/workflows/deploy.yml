@@ -53,6 +53,8 @@ jobs:
           echo GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} >> .env
           echo NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} >> .env
           echo NAVER_SECRET=${{ secrets.NAVER_SECRET }} >> .env
+          echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
+          echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
           echo OPENSEARCH_URL=${{ secrets.OPENSEARCH_URL }} >> .env
           echo SWAGGER_USER=${{ secrets.SWAGGER_USER }} >> .env
           echo SWAGGER_PWD=${{ secrets.SWAGGER_PWD }} >> .env
