@@ -10,9 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ApiExcludeEndpoint, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import axios from 'axios';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
@@ -28,41 +26,7 @@ import { OgInfoResponseDto } from './dto/response-oginfo.dto';
 @ApiTags('Article')
 @Controller('article')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService, private readonly config: ConfigService) {}
-
-  @ApiExcludeEndpoint()
-  @Get('/testing/:temp')
-  async test(@Param('temp') temp: string) {
-    const opensearchUrl = this.config.get('OPENSEARCH_URL');
-    console.log(opensearchUrl);
-    try {
-      // const first = await axios.get(opensearchUrl, { timeout: 1000 });
-      // console.log('first', first.data);
-      // const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
-      // console.log('second', second.data);
-
-      const { data } = await axios.get(opensearchUrl + '/article-testing1/_doc/' + temp, { timeout: 1000 });
-      return data;
-    } catch (e) {}
-  }
-
-  @ApiExcludeEndpoint()
-  @Post('/testing/:temp')
-  async testPost(@Param('temp') temp: string, @Body() body: any) {
-    const opensearchUrl = this.config.get('OPENSEARCH_URL');
-    console.log(opensearchUrl);
-    try {
-      // const first = await axios.get(opensearchUrl, { timeout: 1000 });
-      // console.log('first', first.data);
-      // const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
-      // console.log('second', second.data);
-
-      const { data } = await axios.post(opensearchUrl + '/article-testing1/_doc/' + temp, body, { timeout: 1000 });
-      return data;
-    } catch (e) {
-      console.log(e.response.data);
-    }
-  }
+  constructor(private readonly articleService: ArticleService) {}
 
   @Auth()
   @Post()
