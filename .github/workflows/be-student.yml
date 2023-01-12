@@ -53,7 +53,7 @@ jobs:
           echo GOOGLE_SECRET=${{ secrets.GOOGLE_SECRET }} >> .env
           echo NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} >> .env
           echo NAVER_SECRET=${{ secrets.NAVER_SECRET }} >> .env
-          echo OPEN_SEARCH_URL=${{ secrets.OPEN_SEARCH_URL }} >> .env
+          echo OPENSEARCH_URL=${{ secrets.OPENSEARCH_URL }} >> .env
           cat .env
 
       - name: Build, tag, and push image to Amazon ECR
