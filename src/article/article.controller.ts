@@ -31,17 +31,19 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService, private readonly config: ConfigService) {}
 
   @ApiExcludeEndpoint()
-  @Get('/testing/:port')
-  async test(@Param('port') port: string) {
+  @Get('/testing/:temp')
+  async test(@Param('temp') temp: string) {
     const opensearchUrl = this.config.get('OPENSEARCH_URL');
     console.log(opensearchUrl);
     try {
-      const first = await axios.get(opensearchUrl, { timeout: 1000 });
-      console.log('first', first.data);
-      const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
-      console.log('second', second.data);
+      // const first = await axios.get(opensearchUrl, { timeout: 1000 });
+      // console.log('first', first.data);
+      // const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
+      // console.log('second', second.data);
+
+      const { data } = await axios.get(opensearchUrl + '/' + temp, { timeout: 1000 });
+      return data;
     } catch (e) {}
-    return await axios.get(opensearchUrl, { timeout: 1000 });
   }
 
   @Auth()
