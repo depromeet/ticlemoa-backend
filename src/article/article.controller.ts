@@ -35,7 +35,13 @@ export class ArticleController {
   async test(@Param('port') port: string) {
     const opensearchUrl = this.config.get('OPENSEARCH_URL');
     console.log(opensearchUrl);
-    return await axios.get(opensearchUrl + ':' + port);
+    try {
+      const first = await axios.get(opensearchUrl, { timeout: 1000 });
+      console.log('first', first.data);
+      const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
+      console.log('second', second.data);
+    } catch (e) {}
+    return await axios.get(opensearchUrl, { timeout: 1000 });
   }
 
   @Auth()

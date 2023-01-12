@@ -21,14 +21,18 @@ export class OpenSearchService {
     const createOpensearchArticleDto = new CreateOpensearchArticleDto(article, tags);
 
     axios
-      .put(this.url + this._DOC + article.id, createOpensearchArticleDto)
+      .put(this.url + this._DOC + article.id, createOpensearchArticleDto, {
+        timeout: 1000,
+      })
       .catch(() => console.log('저장 실패', article));
   }
 
   deleteByIds(articleIds: number[]) {
     Promise.all(
       articleIds.map((articleId) => {
-        axios.delete(this.url + this._DOC + articleId);
+        axios.delete(this.url + this._DOC + articleId, {
+          timeout: 1000,
+        });
       }),
     ).catch(() => console.log('삭제 실패', articleIds));
   }
@@ -47,6 +51,7 @@ export class OpenSearchService {
         url: this.url + this.SEARCH,
         method: 'get',
         data: queryObject,
+        timeout: 1000,
       });
       return ArticleResponseDto.fromSearchResultArray(data.hits.hits);
     } catch (e) {
