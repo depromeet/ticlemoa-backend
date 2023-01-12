@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "045129585965.dkr.ecr.ap-northeast-2.amazonaws.com/ticlemoa",
+    "Name": "012535859612.dkr.ecr.ap-northeast-2.amazonaws.com/nyongnyong-ecr",
     "Update": "true"
   },
   "Ports": [
