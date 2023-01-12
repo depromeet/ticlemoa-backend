@@ -10,7 +10,9 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import { ApiExcludeEndpoint, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import axios from 'axios';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
 import { ParseIdsPipe } from 'src/common/decorators/ids.pipe';
@@ -26,7 +28,15 @@ import { OgInfoResponseDto } from './dto/response-oginfo.dto';
 @ApiTags('Article')
 @Controller('article')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleService, private readonly config: ConfigService) {}
+
+  @ApiExcludeEndpoint()
+  @Get('/testing/:port')
+  async test(@Param('port') port: string) {
+    const opensearchUrl = this.config.get('OPENSEARCH_URL');
+    console.log(opensearchUrl);
+    return await axios.get(opensearchUrl + ':' + port);
+  }
 
   @Auth()
   @Post()
