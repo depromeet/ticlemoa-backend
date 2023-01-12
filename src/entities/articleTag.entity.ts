@@ -18,4 +18,14 @@ export class ArticleTag extends Common {
   @ManyToOne(() => Tag, (tag) => tag.articleTags)
   @JoinColumn([{ name: 'tag_id', referencedColumnName: 'id' }])
   tag: Tag;
+
+  private constructor(tagId: number, articleId: number) {
+    super();
+    this.articleId = articleId;
+    this.tagId = tagId;
+  }
+
+  static of(tagId: number, articleId: number): ArticleTag {
+    return new ArticleTag(tagId, articleId);
+  }
 }

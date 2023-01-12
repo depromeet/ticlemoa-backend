@@ -1,0 +1,46 @@
+{
+  "index_patterns": ["article-*"],
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "korean_analyzer": {
+          "type": "custom",
+          "tokenizer": "korean_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "korean_tokenizer": {
+          "type": "seunjeon_tokenizer"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "url": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "korean_analyzer"
+      },
+      "content": {
+        "type": "text",
+        "analyzer": "korean_analyzer"
+      },
+      "tags": {
+        "type": "text",
+        "analyzer": "korean_analyzer"
+      },
+      "tagIds": {
+        "type": "integer"
+      },
+      "isPublic": {
+        "type": "boolean"
+      }
+    }
+  }
+}

@@ -22,7 +22,7 @@ export class CreateArticleDto {
   imageUrl: string;
 
   @IsBoolean()
-  isPublic: boolean;
+  isPublic = false;
 
   @IsNumber({}, { each: true })
   tagIds: Array<number>;
