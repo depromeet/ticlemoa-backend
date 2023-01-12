@@ -45,6 +45,7 @@ export class ArticleController {
     return { articles };
   }
 
+  @Auth()
   @ApiQuery({
     name: 'tagId',
     required: false,
