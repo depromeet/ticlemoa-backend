@@ -41,9 +41,27 @@ export class ArticleController {
       // const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
       // console.log('second', second.data);
 
-      const { data } = await axios.get(opensearchUrl + '/' + temp, { timeout: 1000 });
+      const { data } = await axios.get(opensearchUrl + '/article-testing1/_doc/' + temp, { timeout: 1000 });
       return data;
     } catch (e) {}
+  }
+
+  @ApiExcludeEndpoint()
+  @Post('/testing/:temp')
+  async testPost(@Param('temp') temp: string, @Body() body: any) {
+    const opensearchUrl = this.config.get('OPENSEARCH_URL');
+    console.log(opensearchUrl);
+    try {
+      // const first = await axios.get(opensearchUrl, { timeout: 1000 });
+      // console.log('first', first.data);
+      // const second = await axios.get(opensearchUrl + ':' + port, { timeout: 1000 });
+      // console.log('second', second.data);
+
+      const { data } = await axios.post(opensearchUrl + '/article-testing1/_doc/' + temp, body, { timeout: 1000 });
+      return data;
+    } catch (e) {
+      console.log(e.response.data);
+    }
   }
 
   @Auth()
