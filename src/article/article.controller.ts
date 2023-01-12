@@ -34,6 +34,7 @@ export class ArticleController {
     return await this.articleService.create(createArticleDto);
   }
 
+  @Auth()
   @Post('info')
   async getOgInfo(@Body() getOgInfoDto: GetOgInfoDto): Promise<OgInfoResponseDto> {
     const ogInfo = await this.articleService.getOgInfo(getOgInfoDto);
@@ -120,6 +121,7 @@ export class ArticleController {
     description: '아무것도 주어지지 않는다면 전체를 검색합니다',
     example: 'true, false, all을 String으로 넣어주시면 됩니다',
   })
+  @Auth()
   @Get(':userId')
   async findByUser(
     @Param('userId', ParseIntPipe) userId: number,
