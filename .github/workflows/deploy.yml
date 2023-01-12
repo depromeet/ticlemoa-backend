@@ -54,6 +54,8 @@ jobs:
           echo NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} >> .env
           echo NAVER_SECRET=${{ secrets.NAVER_SECRET }} >> .env
           echo OPENSEARCH_URL=${{ secrets.OPENSEARCH_URL }} >> .env
+          echo SWAGGER_USER=${{ secrets.SWAGGER_USER }} >> .env
+          echo SWAGGER_PWD=${{ secrets.SWAGGER_PWD }} >> .env
           cat .env
 
       - name: Build, tag, and push image to Amazon ECR
