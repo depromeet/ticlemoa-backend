@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { UserPayload } from 'src/auth/types/jwt-payload.interface';
@@ -37,24 +48,86 @@ export class ArticleController {
     description: '검색을 위한 검색어를 담고 있습니다',
     example: '뇽뇽',
   })
+  @ApiQuery({
+    name: 'isPublic',
+    required: false,
+    description: '아무것도 주어지지 않는다면 전체를 검색합니다',
+    example: 'true, false, all을 String으로 넣어주시면 됩니다',
+  })
+  @ApiQuery({
+    name: 'target',
+    required: false,
+    description: '아무것도 주어지지 않는다면 개인을 검색합니다',
+    example: 'all, self를 String으로 넣어주시면 됩니다',
+  })
   async findAll(
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
+    @Query('isPublic') isPublic: string,
+    @Query('target') target: string,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findAll(userId, decodeURIComponent(search));
+    isPublic = this.validateIsPublic(isPublic);
+    target = this.validateTarget(target);
+    const articles: ArticleResponseDto[] = await this.articleService.findAll(
+      userId,
+      isPublic,
+      decodeURIComponent(search),
+      target,
+    );
     return { articles };
+  }
+
+  private validateIsPublic(isPublic?: string) {
+    switch (isPublic) {
+      case undefined:
+      case 'all':
+        isPublic = 'all';
+        break;
+      case 'true':
+        isPublic = 'true';
+        break;
+      case 'false':
+        isPublic = 'false';
+        break;
+      default:
+        throw new BadRequestException('잘못된 값이 들어왔습니다');
+    }
+    return isPublic;
+  }
+
+  private validateTarget(target?: string) {
+    switch (target) {
+      case undefined:
+      case 'self':
+        target = 'self';
+        break;
+      case 'all':
+        target = 'all';
+        break;
+      default:
+        throw new BadRequestException('잘못된 값이 들어왔습니다');
+    }
+    return target;
   }
 
   @ApiQuery({
     name: 'tagId',
     required: false,
   })
+  @ApiQuery({
+    name: 'isPublic',
+    required: false,
+    description: '아무것도 주어지지 않는다면 전체를 검색합니다',
+    example: 'true, false, all을 String으로 넣어주시면 됩니다',
+  })
   @Get(':userId')
   async findByUser(
     @Param('userId', ParseIntPipe) userId: number,
+    @Query('isPublic') isPublic?: string,
     @Query('tagId') tagId?: string,
   ): Promise<ManyArticlesResponseDto> {
-    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, tagId);
+    isPublic = this.validateIsPublic(isPublic);
+    const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, isPublic, tagId);
     return { articles };
   }
 

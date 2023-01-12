@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Article } from 'src/entities/article.entity';
+import { OneSearchType } from '../opensearch/opensearch.find.type';
 
 export class OneArticleResponseDto {
   id: number;
@@ -28,15 +29,55 @@ export class ArticleResponseDto {
   @ApiProperty({ nullable: true })
   private imageUrl?: string;
   private tagIds: number[];
-  constructor(article: Article) {
-    this.id = article.id;
-    this.url = article.url;
-    this.title = article.title;
-    this.content = article.content;
-    this.viewCount = article.viewCount;
-    this.isPublic = article.isPublic;
-    this.userId = article.userId;
-    this.tagIds = article.articleTags.map((articleTag) => articleTag.tagId);
+  private constructor(
+    id: number,
+    url: string,
+    title: string,
+    content: string,
+    viewCount: number,
+    isPublic: boolean,
+    userId: number,
+    articleTagIds: number[],
+  ) {
+    this.id = id;
+    this.url = url;
+    this.title = title;
+    this.content = content;
+    this.viewCount = viewCount;
+    this.isPublic = isPublic;
+    this.userId = userId;
+    this.tagIds = articleTagIds;
+  }
+
+  static fromArticle(article: Article): ArticleResponseDto {
+    return new ArticleResponseDto(
+      article.id,
+      article.url,
+      article.title,
+      article.content,
+      article.viewCount,
+      article.isPublic,
+      article.userId,
+      article.articleTags.map((articleTag) => articleTag.tagId),
+    );
+  }
+
+  static fromSearchResultArray(searchResult: OneSearchType[]): ArticleResponseDto[] {
+    return searchResult.map((oneResult) => this.fromOneSearchResult(oneResult._source));
+  }
+
+  private static fromOneSearchResult(oneResult: OneSearchType['_source']): ArticleResponseDto {
+    return new ArticleResponseDto(
+      oneResult.id,
+      oneResult.url,
+      oneResult.title,
+      oneResult.content,
+      //viewCount 로직은 현재 없기에 0으로 만들어 두었습니다
+      0,
+      oneResult.isPublic,
+      oneResult.userId,
+      oneResult.tagIds,
+    );
   }
 }
 
