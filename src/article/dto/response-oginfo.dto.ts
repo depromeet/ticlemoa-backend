@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsObject, IsString } from 'class-validator';
 
 class OgImage {
   @ApiProperty({ nullable: true })

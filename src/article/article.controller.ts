@@ -52,25 +52,35 @@ export class ArticleController {
     name: 'isPublic',
     required: false,
     description: '아무것도 주어지지 않는다면 전체를 검색합니다',
-    example: 'true',
+    example: 'true, false, all을 String으로 넣어주시면 됩니다',
+  })
+  @ApiQuery({
+    name: 'target',
+    required: false,
+    description: '아무것도 주어지지 않는다면 개인을 검색합니다',
+    example: 'all, self를 String으로 넣어주시면 됩니다',
   })
   async findAll(
     @Query('search') search: string,
     @UserRequest() { userId }: UserPayload,
     @Query('isPublic') isPublic: string,
+    @Query('target') target: string,
   ): Promise<ManyArticlesResponseDto> {
-    isPublic = this.validateQuery(isPublic);
+    isPublic = this.validateIsPublic(isPublic);
+    target = this.validateTarget(target);
     const articles: ArticleResponseDto[] = await this.articleService.findAll(
       userId,
       isPublic,
       decodeURIComponent(search),
+      target,
     );
     return { articles };
   }
 
-  private validateQuery(isPublic?: string) {
+  private validateIsPublic(isPublic?: string) {
     switch (isPublic) {
       case undefined:
+      case 'all':
         isPublic = 'all';
         break;
       case 'true':
@@ -85,6 +95,21 @@ export class ArticleController {
     return isPublic;
   }
 
+  private validateTarget(target?: string) {
+    switch (target) {
+      case undefined:
+      case 'self':
+        target = 'self';
+        break;
+      case 'all':
+        target = 'all';
+        break;
+      default:
+        throw new BadRequestException('잘못된 값이 들어왔습니다');
+    }
+    return target;
+  }
+
   @ApiQuery({
     name: 'tagId',
     required: false,
@@ -93,7 +118,7 @@ export class ArticleController {
     name: 'isPublic',
     required: false,
     description: '아무것도 주어지지 않는다면 전체를 검색합니다',
-    example: 'true',
+    example: 'true, false, all을 String으로 넣어주시면 됩니다',
   })
   @Get(':userId')
   async findByUser(
@@ -101,7 +126,7 @@ export class ArticleController {
     @Query('isPublic') isPublic?: string,
     @Query('tagId') tagId?: string,
   ): Promise<ManyArticlesResponseDto> {
-    isPublic = this.validateQuery(isPublic);
+    isPublic = this.validateIsPublic(isPublic);
     const articles: ArticleResponseDto[] = await this.articleService.findByUser(userId, isPublic, tagId);
     return { articles };
   }

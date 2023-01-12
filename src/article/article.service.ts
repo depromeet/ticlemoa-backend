@@ -91,15 +91,15 @@ export class ArticleService {
     return articles.filter((article) => article.userId !== userId).length !== 0;
   }
 
-  async findAll(userId: number, isPublic: string, search: string): Promise<ArticleResponseDto[]> {
+  async findAll(userId: number, isPublic: string, search: string, target: string): Promise<ArticleResponseDto[]> {
     const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
     const blacklistIds: number[] = blacklists.map((it) => it.targetId);
-    return await this.openSearchService.findBySearchAndFilterBlacklist(search, isPublic, blacklistIds);
+    return await this.openSearchService.findBySearchAndFilterBlacklist(search, isPublic, blacklistIds, target, userId);
   }
 
   async findByUser(userId: number, isPublic: string, tagId?: string): Promise<ArticleResponseDto[]> {
     const articles: Article[] = await this.articleRepository.findByUserIdAndTag(userId, isPublic, tagId);
-    return articles?.map((article) => new ArticleResponseDto(article));
+    return articles?.map((article) => ArticleResponseDto.fromArticle(article));
   }
 
   async getOgInfo({ url }: GetOgInfoDto): Promise<any> {
