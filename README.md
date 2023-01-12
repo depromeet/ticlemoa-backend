@@ -12,7 +12,7 @@
 </div>
 
 # 🏗 시스템 아키텍쳐
-![image](https://user-images.githubusercontent.com/80899085/211158112-59b099cc-f6f3-4484-9d78-9463ca13709e.png)
+![image](https://user-images.githubusercontent.com/83271772/211965221-59743b7c-18b9-4ee9-a8bc-c1615b68ea43.png)
 
 # 🧩 ERD 다이어그램
 <img width="888" alt="image" src="https://user-images.githubusercontent.com/31057849/211810874-00c4a8ed-a15d-46be-b5fc-662746c7cea9.png">
