@@ -14,7 +14,7 @@ export class OpenSearchService {
   private _DOC = '/_doc/';
   private SEARCH = '/_search';
   constructor(private readonly configService: ConfigService) {
-    this.url = configService.get('OPENSEARCH_URL') + '/article-testing1';
+    this.url = configService.get('OPENSEARCH_URL') + '/article-23-01';
   }
 
   update(article: Article, tags: Tag[]) {

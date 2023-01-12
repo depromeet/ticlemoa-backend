@@ -15,7 +15,7 @@ export type SearchResponseType = {
   data: SearchType;
 };
 export type OneSearchType = {
-  _index: 'article-testing';
+  _index: string;
   _id: string;
   _source: {
     id: number;
