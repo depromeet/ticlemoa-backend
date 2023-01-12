@@ -50,6 +50,7 @@ export class OpenSearchService {
       });
       return ArticleResponseDto.fromSearchResultArray(data.hits.hits);
     } catch (e) {
+      console.log(e.response.data);
       throw new BadRequestException('잘못된 요청입니다');
     }
   }
