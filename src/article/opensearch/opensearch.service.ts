@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { Article } from 'src/entities/article.entity';
 import { Tag } from 'src/entities/tag.entity';
-import { ArticleResponseDto } from '../dto/response-article.dto';
 import { CreateOpensearchArticleDto } from './opensearch.create-article.dto';
 import { QueryType, SearchResponseType } from './opensearch.find.type';
 
@@ -43,7 +42,7 @@ export class OpenSearchService {
     blacklistIds: number[],
     target: string,
     userId: number,
-  ): Promise<ArticleResponseDto[]> {
+  ): Promise<number[]> {
     const queryObject: QueryType = this.createQueryObject(search, isPublic, blacklistIds, target, userId);
 
     try {
@@ -53,7 +52,7 @@ export class OpenSearchService {
         data: queryObject,
         timeout: 1000,
       });
-      return ArticleResponseDto.fromSearchResultArray(data.hits.hits);
+      return data.hits.hits.map((oneSearch) => oneSearch._source.id);
     } catch (e) {
       console.log(e.response.data);
       throw new BadRequestException('잘못된 요청입니다');

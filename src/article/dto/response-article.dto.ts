@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Article } from 'src/entities/article.entity';
-import { OneSearchType } from '../opensearch/opensearch.find.type';
 
 export class OneArticleResponseDto {
   id: number;
@@ -38,6 +37,7 @@ export class ArticleResponseDto {
     isPublic: boolean,
     userId: number,
     articleTagIds: number[],
+    imageUrl: string,
   ) {
     this.id = id;
     this.url = url;
@@ -47,6 +47,7 @@ export class ArticleResponseDto {
     this.isPublic = isPublic;
     this.userId = userId;
     this.tagIds = articleTagIds;
+    this.imageUrl = imageUrl;
   }
 
   static fromArticle(article: Article): ArticleResponseDto {
@@ -59,24 +60,7 @@ export class ArticleResponseDto {
       article.isPublic,
       article.userId,
       article.articleTags.map((articleTag) => articleTag.tagId),
-    );
-  }
-
-  static fromSearchResultArray(searchResult: OneSearchType[]): ArticleResponseDto[] {
-    return searchResult.map((oneResult) => this.fromOneSearchResult(oneResult._source));
-  }
-
-  private static fromOneSearchResult(oneResult: OneSearchType['_source']): ArticleResponseDto {
-    return new ArticleResponseDto(
-      oneResult.id,
-      oneResult.url,
-      oneResult.title,
-      oneResult.content,
-      //viewCount 로직은 현재 없기에 0으로 만들어 두었습니다
-      0,
-      oneResult.isPublic,
-      oneResult.userId,
-      oneResult.tagIds,
+      article.imageUrl,
     );
   }
 }

@@ -94,7 +94,15 @@ export class ArticleService {
   async findAll(userId: number, isPublic: string, search: string, target: string): Promise<ArticleResponseDto[]> {
     const blacklists = await this.blacklistRepository.findAllBlacklistByUserId(userId);
     const blacklistIds: number[] = blacklists.map((it) => it.targetId);
-    return await this.openSearchService.findBySearchAndFilterBlacklist(search, isPublic, blacklistIds, target, userId);
+    const resultIds: number[] = await this.openSearchService.findBySearchAndFilterBlacklist(
+      search,
+      isPublic,
+      blacklistIds,
+      target,
+      userId,
+    );
+    const resultArticles = await this.articleRepository.findByArticleIds(resultIds);
+    return resultArticles.map((article) => ArticleResponseDto.fromArticle(article));
   }
 
   async findByUser(userId: number, isPublic: string, tagId?: string): Promise<ArticleResponseDto[]> {
