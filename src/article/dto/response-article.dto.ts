@@ -28,6 +28,7 @@ export class ArticleResponseDto {
   @ApiProperty({ nullable: true })
   private imageUrl?: string;
   private tagIds: number[];
+  private createdAt: Date;
   private constructor(
     id: number,
     url: string,
@@ -38,6 +39,7 @@ export class ArticleResponseDto {
     userId: number,
     articleTagIds: number[],
     imageUrl: string,
+    createdAt: Date,
   ) {
     this.id = id;
     this.url = url;
@@ -48,6 +50,7 @@ export class ArticleResponseDto {
     this.userId = userId;
     this.tagIds = articleTagIds;
     this.imageUrl = imageUrl;
+    this.createdAt = createdAt;
   }
 
   static fromArticle(article: Article): ArticleResponseDto {
@@ -61,6 +64,7 @@ export class ArticleResponseDto {
       article.userId,
       article.articleTags.map((articleTag) => articleTag.tagId),
       article.imageUrl,
+      article.createdAt,
     );
   }
 }
