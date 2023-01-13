@@ -17,7 +17,8 @@ export class CreateArticleDto {
   @IsUrl()
   url: string;
 
-  @IsUrl()
+  // 향후 수정
+  @IsString()
   @IsOptional()
   imageUrl: string;
 
