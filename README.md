@@ -1,5 +1,5 @@
-
 ![image](https://user-images.githubusercontent.com/31057849/212338456-042c6374-0719-40e5-9aa6-666ccde5b3ab.png)
+
 <div align="center">
 
 <h1>Ticlemoa</br>아티클을 모아 지식을 태산처럼</h1>
@@ -10,10 +10,10 @@
 ![nestjs](https://img.shields.io/badge/nest-9.1.4-%23E0234E?style=flat&logo=NestJS)
 ![docker](https://img.shields.io/badge/docker-20.10.21-%232496ED?style=flat&logo=Docker)
 
-
 </div>
 
 ### Commit Convention
+
 ```
 - feat : 새로운 기능 추가
 - fix : 버그 수정
@@ -36,15 +36,29 @@
   - 커뮤니티를 통해 여러 사람과 아티클로 다양한 토론 및 의견을 공유하기
 
 # 🏗 시스템 아키텍쳐
+
 ![image](https://user-images.githubusercontent.com/83271772/211965221-59743b7c-18b9-4ee9-a8bc-c1615b68ea43.png)
 
 # 🧩 ERD 다이어그램
-<img width="888" alt="image" src="https://user-images.githubusercontent.com/31057849/211810874-00c4a8ed-a15d-46be-b5fc-662746c7cea9.png">
 
+<img width="888" alt="image" src="https://user-images.githubusercontent.com/31057849/211810874-00c4a8ed-a15d-46be-b5fc-662746c7cea9.png">
 
 # 👥 팀원 소개
 
-|                                                           강시온                                                           |                                                           송은우                                                           |                                                          이성태                                                          |
-| :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/79798443/206142768-d6a0d84d-26d3-43bd-a27d-7ed163c01271.png" width="200" /> | <img src="https://user-images.githubusercontent.com/31057849/211719676-0f991952-82e9-4129-8f3d-2e453f064716.png" width="200"> | <img src="https://user-images.githubusercontent.com/31057849/211719454-a4828202-e722-482a-bcb0-10277396c81d.png" width="200" /> |
-|                                         [Yaminyam](https://github.com/Yaminyam)                                         |                                             [be-student](https://github.com/be-student)                                             |                                           [stae1102](https://github.com/stae1102)                                           |
+|                                                          백엔드, 팀장                                                           |                                                            백엔드                                                             |                                                             백엔드                                                              |
+| :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+|                                                             이성태                                                              |                                                            강시온                                                             |                                                             송은우                                                              |
+| <img src="https://user-images.githubusercontent.com/31057849/211719454-a4828202-e722-482a-bcb0-10277396c81d.png" width="200" /> | <img src="https://user-images.githubusercontent.com/79798443/206142768-d6a0d84d-26d3-43bd-a27d-7ed163c01271.png" width="200"> | <img src="https://user-images.githubusercontent.com/31057849/211719676-0f991952-82e9-4129-8f3d-2e453f064716.png" width="200" /> |
+|                                             [stae1102](https://github.com/stae1102)                                             |                                            [Yaminyam](https://github.com/Yaminyam)                                            |                                           [be-student](https://github.com/be-student)                                           |
+
+|                                                            iOS, 팀장                                                            |                                      iOS                                       |                                      iOS                                       |                                      iOS                                       |
+| :-----------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :----------------------------------------------------------------------------: |
+|                                                             김용우                                                              |                                     김우성                                     |                                     신재웅                                     |                                     차요셉                                     |
+| <img src="https://user-images.githubusercontent.com/83271772/212342051-40e79615-81a6-45ed-8497-0b4b3d5da276.png" width="200" /> | <img src="https://avatars.githubusercontent.com/u/65879950?v=4" width="200" /> | <img src="https://avatars.githubusercontent.com/u/81242125?v=4" width="200" /> | <img src="https://avatars.githubusercontent.com/u/35060252?v=4" width="200" /> |
+|                                               [keeplo](https://github.com/keeplo)                                               |                  [kipsong133](https://github.com/kipsong133)                   |             [sustainable-git](https://github.com/sustainable-git)              |                   [joseph704](https://github.com/joseph704)                    |
+
+|                                                          백엔드, 팀장                                                           |                                                            백엔드                                                             |                                                             백엔드                                                              |
+| :-----------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+|                                                             임효연                                                              |                                                            허창민                                                             |                                                             형성현                                                              |
+| <img src="https://user-images.githubusercontent.com/83271772/212343731-6332432b-cae8-42b5-8667-d0a8b18d34be.png" width="200" /> | <img src="https://user-images.githubusercontent.com/83271772/212343731-6332432b-cae8-42b5-8667-d0a8b18d34be.png" width="200"> | <img src="https://user-images.githubusercontent.com/83271772/212343731-6332432b-cae8-42b5-8667-d0a8b18d34be.png" width="200" /> |
+|                                                           [임효연]()                                                            |                                                          [허창민]()                                                           |                                                           [형성현]()                                                            |
