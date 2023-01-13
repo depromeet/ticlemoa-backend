@@ -1,7 +1,7 @@
 
+![image](https://user-images.githubusercontent.com/31057849/212338456-042c6374-0719-40e5-9aa6-666ccde5b3ab.png)
 <div align="center">
 
-<img src="https://user-images.githubusercontent.com/31057849/211729765-97839bfa-72c0-4d48-99b4-9d854a415649.png" width="200" />
 <h1>Ticlemoa</br>아티클을 모아 지식을 태산처럼</h1>
 
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fdepromeet%2Fticlemoa-backend&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
@@ -10,7 +10,6 @@
 ![nestjs](https://img.shields.io/badge/nest-9.1.4-%23E0234E?style=flat&logo=NestJS)
 ![docker](https://img.shields.io/badge/docker-20.10.21-%232496ED?style=flat&logo=Docker)
 
-![image](https://user-images.githubusercontent.com/31057849/212338456-042c6374-0719-40e5-9aa6-666ccde5b3ab.png)
 
 </div>
 
@@ -27,15 +26,6 @@
 - perf : 성능 개선
 - chore : 그 외 자잘한 수정
 ```
-
-# 🚀 주요 기능
-
-- 아티클 모으기
-  - 브라우저의 공유하기 버튼을 통해 쉽게 저장하기
-- 마이페이지
-- 모아모아 (예정)
-  - 커뮤니티를 통해 여러 사람과 아티클로 다양한 토론 및 의견을 공유하기
-
 # 🏗 시스템 아키텍쳐
 ![image](https://user-images.githubusercontent.com/83271772/211965221-59743b7c-18b9-4ee9-a8bc-c1615b68ea43.png)
 
