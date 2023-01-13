@@ -1,3 +1,4 @@
+
 <div align="center">
 
 <img src="https://user-images.githubusercontent.com/31057849/211729765-97839bfa-72c0-4d48-99b4-9d854a415649.png" width="200" />
@@ -11,6 +12,19 @@
 
 </div>
 
+### Commit Convention
+```
+- feat : 새로운 기능 추가
+- fix : 버그 수정
+- docs : 문서 관련
+- style : 스타일 변경 (포매팅 수정, 들여쓰기 추가, …)
+- refactor : 코드 리팩토링
+- test : 테스트 관련 코드
+- build : 빌드 관련 파일 수정
+- ci : CI 설정 파일 수정
+- perf : 성능 개선
+- chore : 그 외 자잘한 수정
+```
 # 🏗 시스템 아키텍쳐
 ![image](https://user-images.githubusercontent.com/83271772/211965221-59743b7c-18b9-4ee9-a8bc-c1615b68ea43.png)
 
