@@ -22,6 +22,7 @@ import { NaverAuthGuard } from './utils/guards/naver-auth.guard';
 import { UserPayload } from './types/jwt-payload.interface';
 import { Auth } from './decorator/auth.decorator';
 import { WithdrawRequestDto } from './dto/withdraw-request.dto';
+import { RefreshGuard } from './utils/guards/jwt-refresh.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -135,9 +136,9 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @Auth()
+  @Auth(RefreshGuard)
   @ApiOperation({
-    description: 'refesh 토큰을 사용하여 access 토큰을 재발급합니다. RTR로 refresh 토큰도 재발급합니다,',
+    description: 'refresh 토큰을 사용하여 access 토큰을 재발급합니다. RTR로 refresh 토큰도 재발급합니다,',
   })
   @ApiCreatedResponse({ description: 'access token 재발급 성공', type: LoginResponseDto })
   @ApiUnauthorizedResponse({ description: '유효하지 않은 refresh token으로 access token 재발급에 실패했습니다.' })

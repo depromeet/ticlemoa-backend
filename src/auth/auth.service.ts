@@ -46,7 +46,7 @@ export class AuthService {
           });
         }
       }
-    } catch (error) {
+    } catch {
       throw new BadRequestException({
         message: '유효하지 않는 OAuth 요청입니다.',
       });
