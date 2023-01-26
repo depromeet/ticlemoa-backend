@@ -33,7 +33,7 @@
     "@sentry/node": "^7.17.2",
     "axios": "^1.2.1",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2",
+    "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express-basic-auth": "^1.2.1",
